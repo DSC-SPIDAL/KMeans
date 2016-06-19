@@ -43,16 +43,16 @@ public class Utils
     public static void printPoints(double[][] points) throws MPIException
     {
         int[] nextRank = new int[1];
-        for (int i = 0; i < ParallelOptions.size; i++)
+        for (int i = 0; i < ParallelOps.worldProcsCount; i++)
         {
-            if (ParallelOptions.rank == 0)
+            if (ParallelOps.worldProcRank == 0)
             {
                 nextRank[0] = i;
             }
-            ParallelOptions.comm.bcast(nextRank, 1, MPI.INT, 0);
-            if (nextRank[0] == ParallelOptions.rank)
+            ParallelOps.worldProcsComm.bcast(nextRank, 1, MPI.INT, 0);
+            if (nextRank[0] == ParallelOps.worldProcRank)
             {
-                System.out.println("Rank: " + ParallelOptions.rank);
+                System.out.println("Rank: " + ParallelOps.worldProcRank);
                 for (int j = 0; j < points.length; j++)
                 {
                     double[] point = points[j];
