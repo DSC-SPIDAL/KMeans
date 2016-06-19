@@ -180,7 +180,7 @@ public class Program {
                     commTimerWithCopy.start();
                     copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
                     commTimer.start();
-                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, dimension * numCenters, MPI.DOUBLE, MPI.SUM);
+                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, (dimension+1) * numCenters, MPI.DOUBLE, MPI.SUM);
                     // NOTE - change to mmap call
 //                    ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                     commTimer.stop();
