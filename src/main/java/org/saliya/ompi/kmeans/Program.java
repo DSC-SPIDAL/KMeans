@@ -166,13 +166,13 @@ public class Program {
 
                 if (ParallelOps.worldProcsCount > 1) {
                     commTimerWithCopy.start();
-//                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
+                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
                     commTimer.start();
-//                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, dimension * numCenters, MPI.DOUBLE, MPI.SUM);
+                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, dimension * numCenters, MPI.DOUBLE, MPI.SUM);
                     // NOTE - change to mmap call
-                    ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
+//                    ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                     commTimer.stop();
-//                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
+                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
                     commTimerWithCopy.stop();
                     times[0] += commTimerWithCopy.elapsed(TimeUnit.MILLISECONDS);
                     times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
