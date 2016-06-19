@@ -166,20 +166,11 @@ public class Program {
 
                 // TODO - debugs
                 if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
-                    System.out.println("--From centerSumsAndCountsForThread before collective");
+                    System.out.println("-- Rank: " + ParallelOps.worldProcRank + " From centerSumsAndCountsForThread before collective");
                     for (int c = 0; c < numCenters; ++c) {
                         System.out.print(c);
                         for (int d = 0; d < dimension + 1; ++d) {
                             System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
-                        }
-                        System.out.println();
-                    }
-
-                    System.out.println("--From centers before collective");
-                    for (int c = 0; c < numCenters; ++c){
-                        System.out.print(c);
-                        for (int d = 0; d < dimension; ++d) {
-                            System.out.print("  " + centers[c * dimension + d]);
                         }
                         System.out.println();
                     }
@@ -199,6 +190,18 @@ public class Program {
                     times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
                     commTimerWithCopy.reset();
                     commTimer.reset();
+                }
+
+                // TODO - debugs
+                if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
+                    System.out.println("++ Rank: " + ParallelOps.worldProcRank + " From centerSumsAndCountsForThread after collective");
+                    for (int c = 0; c < numCenters; ++c) {
+                        System.out.print(c);
+                        for (int d = 0; d < dimension + 1; ++d) {
+                            System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
+                        }
+                        System.out.println();
+                    }
                 }
 
 
