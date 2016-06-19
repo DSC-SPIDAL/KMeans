@@ -140,9 +140,11 @@ public class Program {
                         int pointOffset = (pointStartIdxForThread + i) * dimension;
                         int centerWithMinDist = findCenterWithMinDistance(points, centers, dimension,
                                 pointOffset);
-                        if (finalItrCount ==2){
+
+                        // TODO - debugs
+                        /*if (finalItrCount ==2){
                             System.out.println("point " + i  + " closest center "  +centerWithMinDist);
-                        }
+                        }*/
                         int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
                         ++centerSumsAndCountsForThread[centerOffset+dimension];
                         accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
@@ -177,11 +179,13 @@ public class Program {
                 }
 
                 // TODO - debugs
-                for (int c = 0; c < numCenters; ++c){
-                    for (int d = 0; d < dimension+1; ++d){
-                        System.out.print(c + "  "  + centerSumsAndCountsForThread[c*(dimension+1)+d]);
+                if (itrCount == 1) {
+                    for (int c = 0; c < numCenters; ++c) {
+                        for (int d = 0; d < dimension + 1; ++d) {
+                            System.out.print(c + "  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
+                        }
+                        System.out.println();
                     }
-                    System.out.println();
                 }
 
                 converged = true;
