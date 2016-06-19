@@ -195,7 +195,7 @@ public class Program {
                 }
 
                 // TODO - debugs
-                if (itrCount == 1) {
+                /*if (itrCount == 1) {
                     System.out.println("From centerSumsAndCountsForThread");
                     for (int c = 0; c < numCenters; ++c) {
                         System.out.print(c);
@@ -213,7 +213,7 @@ public class Program {
                         }
                         System.out.println();
                     }
-                }
+                }*/
             }
             loopTimer.stop();
             times[2] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
