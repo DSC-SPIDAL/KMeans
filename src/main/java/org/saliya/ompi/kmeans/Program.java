@@ -176,6 +176,14 @@ public class Program {
                     commTimer.reset();
                 }
 
+                // TODO - debugs
+                for (int c = 0; c < numCenters; ++c){
+                    for (int d = 0; d < dimension+1; ++d){
+                        System.out.print(c + "  "  + centerSumsAndCountsForThread[c*(dimension+1)+d]);
+                    }
+                    System.out.println();
+                }
+
                 converged = true;
                 for (int i = 0; i < numCenters; ++i) {
                     final int c = i;
