@@ -191,7 +191,7 @@ public class Program {
                         // form new centers
                         converged = false;
                     }
-                    IntStream.range(0, dimension).forEach(j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
+                    IntStream.range(0, dimension).forEach(j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
                 }
 
                 // TODO - debugs
