@@ -239,12 +239,13 @@ public class Program {
                     try (PrintWriter writer = new PrintWriter(
                             Files.newBufferedWriter(Paths.get(outputFile), Charset.defaultCharset(),
                                     StandardOpenOption.CREATE, StandardOpenOption.WRITE), true)) {
+                        PointReader reader = PointReader.readRowRange(pointsFile, 0, numPoints, dimension,
+                                isBigEndian);
+                        double[] point = new double[dimension];
                         for (int i = 0; i < numPoints; ++i) {
-                            writer.println(i + "\t");
-                            for (int d = 0; d < dimension; ++d){
-                                writer.println(points[i*dimension+d] + "\t");
-                            }
-                            writer.println((ParallelOps.worldProcsCount > 1) ? intBuffer2.get(i) : clusterAssignments[i]);
+                            reader.getPoint(i, point, dimension, 0);
+                            writer.println(i + "\t" + Doubles.join("\t", point) + "\t" +
+                                    ((ParallelOps.worldProcsCount > 1) ? intBuffer2.get(i) : clusterAssignments[i]));
                         }
                     }
                     timer.stop();
