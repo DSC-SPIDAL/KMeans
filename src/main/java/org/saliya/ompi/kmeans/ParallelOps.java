@@ -210,7 +210,7 @@ public class ParallelOps {
                         StandardOpenOption.WRITE)) {
 
             // (pointDimension+1) to keep track of number of points per center
-            int extent = numCenters * (pointDimension+1) * mmapProcsCount;
+            int extent = numCenters * (pointDimension+1) * mmapProcsCount * Double.BYTES;
             mmapCollectiveBytes = ByteBufferBytes.wrap(mmapCollectiveFc.map(
                     FileChannel.MapMode.READ_WRITE, 0L, extent));
             mmapCollectiveByteBuffer = mmapCollectiveBytes.sliceAsByteBuffer(mmapCollectiveByteBuffer);
