@@ -142,9 +142,9 @@ public class Program {
                                 pointOffset);
 
                         // TODO - debugs
-                        /*if (finalItrCount ==2){
+                        if (finalItrCount ==1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)){
                             System.out.println("point " + i  + " closest center "  +centerWithMinDist);
-                        }*/
+                        }
                         int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
                         ++centerSumsAndCountsForThread[centerOffset+dimension];
                         accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
@@ -197,7 +197,7 @@ public class Program {
                 }
 
                 // TODO - debugs
-                if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
+                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
                     System.out.println("From centerSumsAndCountsForThread");
                     for (int c = 0; c < numCenters; ++c) {
                         System.out.print(c);
@@ -215,7 +215,7 @@ public class Program {
                         }
                         System.out.println();
                     }
-                }
+                }*/
             }
             loopTimer.stop();
             times[2] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
