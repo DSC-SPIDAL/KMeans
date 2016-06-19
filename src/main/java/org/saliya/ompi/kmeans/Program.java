@@ -142,9 +142,9 @@ public class Program {
                                 pointOffset);
 
                         // TODO - debugs
-                        if (finalItrCount ==1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)){
+                       /* if (finalItrCount ==1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)){
                             System.out.println("point " + i  + " closest center "  +centerWithMinDist);
-                        }
+                        }*/
                         int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
                         ++centerSumsAndCountsForThread[centerOffset+dimension];
                         accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
@@ -161,6 +161,27 @@ public class Program {
                             centerSumsAndCountsForThread[offsetWithinThread] += centerSumsAndCountsForThread[
                                     i * numCenters * (dimension + 1) + offsetWithinThread];
                         }
+                    }
+                }
+
+                // TODO - debugs
+                if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
+                    System.out.println("--From centerSumsAndCountsForThread before collective");
+                    for (int c = 0; c < numCenters; ++c) {
+                        System.out.print(c);
+                        for (int d = 0; d < dimension + 1; ++d) {
+                            System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
+                        }
+                        System.out.println();
+                    }
+
+                    System.out.println("--From centers before collective");
+                    for (int c = 0; c < numCenters; ++c){
+                        System.out.print(c);
+                        for (int d = 0; d < dimension; ++d) {
+                            System.out.print("  " + centers[c * dimension + d]);
+                        }
+                        System.out.println();
                     }
                 }
 
