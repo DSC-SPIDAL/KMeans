@@ -345,6 +345,44 @@ public class ParallelOps {
         return UNSAFE.getLong(buffer, addressOffset);
     }
 
+    public static void allReduceSum(double[] values, int offset, int length) throws MPIException {
+        int idx;
+        mmapCollectiveBytes.position(0);
+        for (int i = 0; i < length; ++i){
+            idx = (i*mmapProcsCount)+mmapProcRank;
+            mmapCollectiveBytes.writeDouble(idx*Double.BYTES, values[offset+i]);
+        }
+        // Important barrier here - as we need to make sure writes are done
+        // to the mmap file.
+        // It's sufficient to wait on ParallelOps.mmapProcComm,
+        // but it's cleaner for timings if we wait on the whole world
+        worldProcsComm.barrier();
+        if (ParallelOps.isMmapLead) {
+            // Node local reduction using shared memory maps
+            double sum;
+            int pos;
+            for (int i = 0; i < length; ++i){
+                sum = 0.0;
+                pos = i*mmapProcsCount*Double.BYTES;
+                for (int j = 0; j < mmapProcsCount; ++j){
+                    ParallelOps.mmapCollectiveBytes.position(pos);
+                    sum += mmapCollectiveBytes.readDouble();
+                    pos += Double.BYTES;
+                }
+                mmapCollectiveBytes.writeDouble(i*Double.BYTES, sum);
+            }
+
+            // Leaders participate in MPI AllReduce
+            cgProcComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE,MPI.SUM);
+        }
+
+        ParallelOps.worldProcsComm.barrier();
+        ParallelOps.mmapCollectiveBytes.position(0);
+        for (int i = 0; i < length; ++i){
+            values[i] = ParallelOps.mmapCollectiveBytes.readDouble();
+        }
+    }
+
     public static void broadcast(ByteBuffer buffer, int length, int root) throws MPIException, InterruptedException, NoSuchFieldException {
         /* for now let's assume a second invocation of broadcast will NOT happen while some ranks are still
         *  doing the first invocation. If that happens, the current implementation can screw up */
