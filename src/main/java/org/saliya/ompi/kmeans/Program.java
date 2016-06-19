@@ -102,7 +102,6 @@ public class Program {
             timer.reset();
 
             DoubleBuffer doubleBuffer = null;
-            IntBuffer intBuffer = null;
             IntBuffer intBuffer2 = null;
             if (ParallelOps.worldProcsCount > 1) {
                 print("  Allocating buffers");
@@ -132,23 +131,20 @@ public class Program {
                 ++itrCount;
                 resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
-                final double[] immutableCenters = centers;
-                launchHabaneroApp(() -> {
-                    forallChunked(0, numThreads - 1, (threadIdx) -> {
-                        int pointsForThread = ParallelOps.pointsForThread[threadIdx];
-                        int pointStartIdxForThread = ParallelOps.pointStartIdxForThread[threadIdx];
+                launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
+                    int pointsForThread = ParallelOps.pointsForThread[threadIdx];
+                    int pointStartIdxForThread = ParallelOps.pointStartIdxForThread[threadIdx];
 
-                        for (int i = 0; i < pointsForThread; ++i) {
-                            int pointOffset = (pointStartIdxForThread + i) * dimension;
-                            int centerWithMinDist = findCenterWithMinDistance(points, immutableCenters, dimension,
-                                    pointOffset);
-                            int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
-                            ++centerSumsAndCountsForThread[centerOffset+dimension];
-                            accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
-                            clusterAssignments[i + pointStartIdxForThread] = centerWithMinDist;
-                        }
-                    });
-                });
+                    for (int i = 0; i < pointsForThread; ++i) {
+                        int pointOffset = (pointStartIdxForThread + i) * dimension;
+                        int centerWithMinDist = findCenterWithMinDistance(points, centers, dimension,
+                                pointOffset);
+                        int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
+                        ++centerSumsAndCountsForThread[centerOffset+dimension];
+                        accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
+                        clusterAssignments[i + pointStartIdxForThread] = centerWithMinDist;
+                    }
+                }));
 
                 // Sum over threads
                 // Place results to arrays of thread 0
