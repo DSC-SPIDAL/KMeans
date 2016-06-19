@@ -131,6 +131,7 @@ public class Program {
                 ++itrCount;
                 resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
+                final int finalItrCount = itrCount;
                 launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
                     int pointsForThread = ParallelOps.pointsForThread[threadIdx];
                     int pointStartIdxForThread = ParallelOps.pointStartIdxForThread[threadIdx];
@@ -139,6 +140,9 @@ public class Program {
                         int pointOffset = (pointStartIdxForThread + i) * dimension;
                         int centerWithMinDist = findCenterWithMinDistance(points, centers, dimension,
                                 pointOffset);
+                        if (finalItrCount ==1){
+                            System.out.println("point " + i  + " closest center "  +centerWithMinDist);
+                        }
                         int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
                         ++centerSumsAndCountsForThread[centerOffset+dimension];
                         accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
