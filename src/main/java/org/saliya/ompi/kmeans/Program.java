@@ -65,7 +65,7 @@ public class Program {
         }
 
         int numPoints = Integer.parseInt(cmd.getOptionValue("n"));
-        int numDimensions = Integer.parseInt(cmd.getOptionValue("d"));
+        int dimension = Integer.parseInt(cmd.getOptionValue("d"));
         int numCenters = Integer.parseInt(cmd.getOptionValue("k"));
         int maxIterations = Integer.parseInt(cmd.getOptionValue("m"));
         double errorThreshold = Double.parseDouble(cmd.getOptionValue("t"));
@@ -74,9 +74,12 @@ public class Program {
         String outputFile = cmd.hasOption("o") ? cmd.getOptionValue("o") : "";
         String centersFile = cmd.hasOption("c") ? cmd.getOptionValue("c") : "";
         String pointsFile = cmd.hasOption("p") ? cmd.getOptionValue("p") : "";
+        int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
+        String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
 
         try {
-            ParallelOptions.setupParallelism(args, numPoints, numThreads);
+            ParallelOps.setupParallelism(args, mmapsPerNode, mmapDir);
+            ParallelOps.setParallelDecomposition(numPoints, dimension, numCenters, numThreads);
 
             Stopwatch mainTimer = Stopwatch.createStarted();
 
@@ -84,8 +87,8 @@ public class Program {
             print("  Reading points ... ");
 
             Stopwatch timer = Stopwatch.createStarted();
-            final double[][] points = readPoints(pointsFile, numDimensions, ParallelOptions.globalVecStartIdx,
-                    ParallelOptions.myNumVec, isBigEndian);
+            final double[] points = readPoints(pointsFile, dimension, ParallelOps.pointStartIdxForProc,
+                    ParallelOps.pointsForProc, isBigEndian);
 
             timer.stop();
             print("    Done in " + timer.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -93,7 +96,7 @@ public class Program {
 
             print("  Reading centers ...");
             timer.start();
-            double[][] centers = readCenters(centersFile, numCenters, numDimensions, isBigEndian);
+            final double[] centers = readCenters(centersFile, numCenters, dimension, isBigEndian);
             timer.stop();
             print("    Done in " + timer.elapsed(TimeUnit.MILLISECONDS) + " ms");
             timer.reset();
@@ -101,12 +104,11 @@ public class Program {
             DoubleBuffer doubleBuffer = null;
             IntBuffer intBuffer = null;
             IntBuffer intBuffer2 = null;
-            if (ParallelOptions.size > 1) {
+            if (ParallelOps.worldProcsCount > 1) {
                 print("  Allocating buffers");
                 timer.start();
-                doubleBuffer = MPI.newDoubleBuffer(numCenters * numDimensions);
-                intBuffer = MPI.newIntBuffer(numCenters);
                 intBuffer2 = MPI.newIntBuffer(numPoints);
+                doubleBuffer = MPI.newDoubleBuffer(numCenters * (dimension+1));
                 timer.stop();
                 // This would be similar across
                 // all processes, so no need to do average
@@ -114,11 +116,10 @@ public class Program {
                 timer.reset();
             }
 
-            final double[][][] centerSumsForThread = new double[numThreads][numCenters][numDimensions];
-            final int[][] pointsPerCenterForThread = new int[numThreads][numCenters];
-            final int[] clusterAssignments = new int[ParallelOptions.myNumVec];
 
-            resetPointsPerCenter(pointsPerCenterForThread);
+            final double[] centerSumsAndCountsForThread = new double[numThreads*numCenters*(dimension+1)];
+            final int[] clusterAssignments = new int[ParallelOps.pointsForProc];
+
 
             int itrCount = 0;
             boolean converged = false;
@@ -129,21 +130,22 @@ public class Program {
             long[] times = new long[]{0, 0, 0};
             while (!converged && itrCount < maxIterations) {
                 ++itrCount;
-                resetCenterSums(centerSumsForThread, numDimensions);
-                resetPointsPerCenter(pointsPerCenterForThread);
+                resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
-                final double[][] immutableCenters = centers;
+                final double[] immutableCenters = centers;
                 launchHabaneroApp(() -> {
-                    forallChunked(0, numThreads - 1, (threadIndex) -> {
-                        int threadLocalMyNumVec = ParallelOptions.myNumVecForThread[threadIndex];
-                        int threadLocalVecStartIdx = ParallelOptions.vecStartIdxForThread[threadIndex];
+                    forallChunked(0, numThreads - 1, (threadIdx) -> {
+                        int pointsForThread = ParallelOps.pointsForThread[threadIdx];
+                        int pointStartIdxForThread = ParallelOps.pointStartIdxForThread[threadIdx];
 
-                        for (int i = 0; i < threadLocalMyNumVec; ++i) {
-                            double[] point = points[i + threadLocalVecStartIdx];
-                            int dMinIdx = findCenterWithMinDistance(point, immutableCenters);
-                            ++pointsPerCenterForThread[threadIndex][dMinIdx];
-                            accumulate(point, centerSumsForThread[threadIndex], dMinIdx);
-                            clusterAssignments[i + threadLocalVecStartIdx] = dMinIdx;
+                        for (int i = 0; i < pointsForThread; ++i) {
+                            int pointOffset = (pointStartIdxForThread + i) * dimension;
+                            int centerWithMinDist = findCenterWithMinDistance(points, immutableCenters, dimension,
+                                    pointOffset);
+                            int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
+                            ++centerSumsAndCountsForThread[centerOffset+dimension];
+                            accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
+                            clusterAssignments[i + pointStartIdxForThread] = centerWithMinDist;
                         }
                     });
                 });
@@ -152,25 +154,21 @@ public class Program {
                 // Place results to arrays of thread 0
                 for (int i = 1; i < numThreads; ++i) {
                     for (int c = 0; c < numCenters; ++c) {
-                        pointsPerCenterForThread[0][c] += pointsPerCenterForThread[i][c];
-                        for (int d = 0; d < numDimensions; ++d) {
-                            centerSumsForThread[0][c][d] += centerSumsForThread[i][c][d];
+                        for (int d = 0; d < dimension; ++d) {
+                            int offsetWithinThread = c*(dimension+1)+d;
+                            centerSumsAndCountsForThread[offsetWithinThread] += centerSumsAndCountsForThread[
+                                    i * numCenters * (dimension + 1) + offsetWithinThread];
                         }
                     }
                 }
 
-                if (ParallelOptions.size > 1) {
+                if (ParallelOps.worldProcsCount > 1) {
                     commTimerWithCopy.start();
-                    copyToBuffer(centerSumsForThread[0], doubleBuffer);
-                    copyToBuffer(pointsPerCenterForThread[0], intBuffer);
+                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
                     commTimer.start();
-                    ParallelOptions.comm.allReduce(doubleBuffer, numDimensions * numCenters, MPI.DOUBLE, MPI.SUM);
+                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, dimension * numCenters, MPI.DOUBLE, MPI.SUM);
                     commTimer.stop();
-                    copyFromBuffer(doubleBuffer, centerSumsForThread[0]);
-                    commTimer.start();
-                    ParallelOptions.comm.allReduce(intBuffer, numCenters, MPI.INT, MPI.SUM);
-                    commTimer.stop();
-                    copyFromBuffer(intBuffer, pointsPerCenterForThread[0]);
+                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
                     commTimerWithCopy.stop();
                     times[0] += commTimerWithCopy.elapsed(TimeUnit.MILLISECONDS);
                     times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
@@ -180,31 +178,24 @@ public class Program {
 
                 converged = true;
                 for (int i = 0; i < numCenters; ++i) {
-                    double[] centerSum = centerSumsForThread[0][i];
-                    int tmpI = i;
-                    IntStream.range(0, numDimensions).forEach(j -> centerSum[j] /= pointsPerCenterForThread[0][tmpI]);
-                    double dist = getEuclideanDistance(centerSum, centers[i]);
+                    final int c = i;
+                    IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) +
+                            j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
+                    double dist = getEuclideanDistance(centerSumsAndCountsForThread, centers, dimension, (c * (dimension + 1)), c*dimension);
                     if (dist > errorThreshold) {
                         // Can't break as center sums need to be divided to
                         // form new centers
                         converged = false;
                     }
+                    IntStream.range(0, dimension).forEach(j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
                 }
-                // Swap original center with centerSumsForThread[0],
-                // which now contains the updated centers. The swapping
-                // will NOT introduce even though centerSumsForThread[0] is
-                // set to old values as they will be reset before next
-                // iteration.
-                double[][] tmp = centers;
-                centers = centerSumsForThread[0];
-                centerSumsForThread[0] = tmp;
             }
             loopTimer.stop();
             times[2] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
             loopTimer.reset();
 
-            if (ParallelOptions.size > 1) {
-                ParallelOptions.comm.reduce(times, 3, MPI.LONG, MPI.SUM, 0);
+            if (ParallelOps.worldProcsCount > 1) {
+                ParallelOps.worldProcsComm.reduce(times, 3, MPI.LONG, MPI.SUM, 0);
             }
             if (!converged) {
                 print("    Stopping K-Means as max iteration count " +
@@ -212,49 +203,48 @@ public class Program {
                         " has reached");
             }
             print("    Done in " + itrCount + " iterations and " +
-                    times[2] * 1.0 / ParallelOptions.size + " ms on average (across all MPI)");
-            if (ParallelOptions.size > 1) {
+                    times[2] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
+            if (ParallelOps.worldProcsCount > 1) {
                 print("    Avg. comm time " +
-                        times[1] * 1.0 / ParallelOptions.size +
+                        times[1] * 1.0 / ParallelOps.worldProcsCount +
                         " ms (across all MPI)");
                 print("    Avg. comm time w/ copy " +
-                        times[0] * 1.0 / ParallelOptions.size + " ms (across all MPI)");
+                        times[0] * 1.0 / ParallelOps.worldProcsCount + " ms (across all MPI)");
             }
 
             if (!Strings.isNullOrEmpty(outputFile)) {
-                if (ParallelOptions.size > 1) {
+                if (ParallelOps.worldProcsCount > 1) {
                     // Gather cluster assignments
                     print("  Gathering cluster assignments ...");
                     timer.start();
-                    int[] lengths = ParallelOptions.getLengthsArray(numPoints);
-                    int[] displas = new int[ParallelOptions.size];
+                    int[] lengths = ParallelOps.getLengthsArray(numPoints);
+                    int[] displas = new int[ParallelOps.worldProcsCount];
                     displas[0] = 0;
-                    System.arraycopy(lengths, 0, displas, 1, ParallelOptions.size - 1);
+                    System.arraycopy(lengths, 0, displas, 1, ParallelOps.worldProcsCount - 1);
                     Arrays.parallelPrefix(displas, (p, q) -> p + q);
-                    intBuffer2.position(ParallelOptions.globalVecStartIdx);
+                    intBuffer2.position(ParallelOps.pointStartIdxForProc);
                     intBuffer2.put(clusterAssignments);
-                    ParallelOptions.comm.allGatherv(intBuffer2, lengths, displas, MPI.INT);
+                    ParallelOps.worldProcsComm.allGatherv(intBuffer2, lengths, displas, MPI.INT);
                     timer.stop();
                     long[] time = new long[]{timer.elapsed(TimeUnit.MILLISECONDS)};
                     timer.reset();
-                    ParallelOptions.comm.reduce(time, 1, MPI.LONG, MPI.SUM, 0);
-                    print("    Done in " + time[0] * 1.0 / ParallelOptions.size +
+                    ParallelOps.worldProcsComm.reduce(time, 1, MPI.LONG, MPI.SUM, 0);
+                    print("    Done in " + time[0] * 1.0 / ParallelOps.worldProcsCount +
                             " ms on average");
                 }
 
-                if (ParallelOptions.rank == 0) {
+                if (ParallelOps.worldProcRank == 0) {
                     print("  Writing output file ...");
                     timer.start();
                     try (PrintWriter writer = new PrintWriter(
                             Files.newBufferedWriter(Paths.get(outputFile), Charset.defaultCharset(),
                                     StandardOpenOption.CREATE, StandardOpenOption.WRITE), true)) {
-                        PointReader reader = PointReader.readRowRange(pointsFile, 0, numPoints, numDimensions,
-                                isBigEndian);
-                        double[] point = new double[numDimensions];
                         for (int i = 0; i < numPoints; ++i) {
-                            reader.getPoint(i, point);
-                            writer.println(i + "\t" + Doubles.join("\t", point) + "\t" +
-                                    ((ParallelOptions.size > 1) ? intBuffer2.get(i) : clusterAssignments[i]));
+                            writer.println(i + "\t");
+                            for (int d = 0; d < dimension; ++d){
+                                writer.println(points[i*dimension+d] + "\t");
+                            }
+                            writer.println((ParallelOps.worldProcsCount > 1) ? intBuffer2.get(i) : clusterAssignments[i]);
                         }
                     }
                     timer.stop();
@@ -268,7 +258,7 @@ public class Program {
                     dateFormat.format(new Date()) + " took " +
                     (mainTimer.elapsed(TimeUnit.MILLISECONDS)) + " ms ===");
 
-            ParallelOptions.endParallelism();
+            ParallelOps.endParallelism();
         } catch (MPIException | IOException e) {
             e.printStackTrace();
         }
@@ -300,25 +290,28 @@ public class Program {
         buffer.put(pointsPerCenter);
     }
 
-    private static void copyToBuffer(double[][] centerSums, DoubleBuffer buffer) {
+    private static void copyFromBuffer(DoubleBuffer buffer, double[] centerSumsAndCounts, int length) {
         buffer.position(0);
-        for (double[] centerSum : centerSums) {
-            buffer.put(centerSum);
-        }
+        buffer.get(centerSumsAndCounts, 0, length);
+    }
+
+    private static void copyToBuffer(double[] centerSumsAndCounts, DoubleBuffer buffer, int length) {
+        buffer.position(0);
+        buffer.put(centerSumsAndCounts, 0, length);
     }
 
     private static void print(String msg) {
-        if (ParallelOptions.rank == 0) {
+        if (ParallelOps.worldProcRank == 0) {
             System.out.println(msg);
         }
     }
 
-    private static int findCenterWithMinDistance(double[] point, double[][] centers) {
-        int k = centers.length;
+    private static int findCenterWithMinDistance(double[] points, double[] centers, int dimension, int pointOffset) {
+        int k = centers.length/dimension;
         double dMin = Double.MAX_VALUE;
         int dMinIdx = -1;
         for (int j = 0; j < k; ++j) {
-            double dist = getEuclideanDistance(point, centers[j]);
+            double dist = getEuclideanDistance(points, centers, dimension, pointOffset, j*dimension);
             if (dist < dMin) {
                 dMin = dist;
                 dMinIdx = j;
@@ -327,42 +320,38 @@ public class Program {
         return dMinIdx;
     }
 
-    private static void accumulate(double[] point, double[][] centerSums, int idx) {
-        double[] center = centerSums[idx];
-        for (int i = 0; i < center.length; ++i) {
-            center[i] += point[i];
+    private static void accumulate(double[] points, double[] centerSumsAndCounts, int pointOffset, int centerOffset, int dimension) {
+        for (int i = 0; i < dimension; ++i) {
+            centerSumsAndCounts[centerOffset+i] += points[pointOffset+i];
         }
     }
 
-    private static double getEuclideanDistance(double[] point1, double[] point2) {
-        int length = point1.length;
+    private static double getEuclideanDistance(double[] point1, double[] point2, int dimension, int point1Offset, int point2Offset) {
         double d = 0.0;
-        for (int i = 0; i < length; ++i) {
-            d += Math.pow(point1[i] - point2[i], 2);
+        for (int i = 0; i < dimension; ++i) {
+            d += Math.pow(point1[i+point1Offset] - point2[i+point2Offset], 2);
         }
         return Math.sqrt(d);
     }
 
-    private static void resetCenterSums(double[][][] centerSumsForThread, int d) {
-        Arrays.stream(centerSumsForThread).forEach(
-                threadLocalCenterSums -> Arrays.stream(threadLocalCenterSums).forEach(
-                        centerSum -> IntStream.range(0, d).forEach(i -> centerSum[i] = 0.0)));
+    private static void resetCenterSumsAndCounts(double[] centerSumsAndCountsForThread) {
+        IntStream.range(0, centerSumsAndCountsForThread.length).forEach(i -> centerSumsAndCountsForThread[i] = 0.0);
     }
 
-    private static double[][] readPoints(String pointsFile, int d, int globalVecStartIdx, int myNumVec, boolean isBigEndian) throws IOException {
-        double[][] points = new double[myNumVec][d];
-        PointReader reader = PointReader.readRowRange(pointsFile, globalVecStartIdx, myNumVec, d, isBigEndian);
-        for (int i = 0; i < myNumVec; i++) {
-            reader.getPoint(i + globalVecStartIdx, points[i]);
+    private static double[] readPoints(String pointsFile, int dimension, int pointStartIdxForProc, int pointCountForProc, boolean isBigEndian) throws IOException {
+        double[] points = new double[pointCountForProc*dimension];
+        PointReader reader = PointReader.readRowRange(pointsFile, pointStartIdxForProc, pointCountForProc, dimension, isBigEndian);
+        for (int i = 0; i < pointCountForProc; i++) {
+            reader.getPoint(i + pointStartIdxForProc, points, dimension, i*dimension);
         }
         return points;
     }
 
-    private static double[][] readCenters(String centersFile, int k, int d, boolean isBigEndian) throws IOException {
-        double[][] centers = new double[k][d];
-        PointReader reader = PointReader.readRowRange(centersFile, 0, k, d, isBigEndian);
+    private static double[] readCenters(String centersFile, int k, int dimension, boolean isBigEndian) throws IOException {
+        double[] centers = new double[k*dimension];
+        PointReader reader = PointReader.readRowRange(centersFile, 0, k, dimension, isBigEndian);
         for (int i = 0; i < k; i++) {
-            reader.getPoint(i, centers[i]);
+            reader.getPoint(i, centers, dimension, i*dimension);
         }
         return centers;
     }

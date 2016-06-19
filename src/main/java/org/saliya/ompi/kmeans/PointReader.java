@@ -40,20 +40,20 @@ public class PointReader
             return new PointReader()
             {
                 @Override
-                public void getPoint(int globalRow, double[] point)
+                public void getPoint(int globalRow, double[] points, int dimension, int offset)
                 {
                     long pos = ((globalRow - startRow) *
                                 ((long) dimension)); // double position
                     // relative to start row
                     int mapIdx = (int) (pos / m);
                     maps[mapIdx].position((int) (pos - (m * ((long) mapIdx))));
-                    maps[mapIdx].get(point);
+                    maps[mapIdx].get(points,offset,dimension);
                 }
             };
         }
     }
 
-    public void getPoint(int globalRow, double[] point)
+    public void getPoint(int globalRow, double[] points, int dimension, int offset)
     {
         throw new UnsupportedOperationException();
     }
