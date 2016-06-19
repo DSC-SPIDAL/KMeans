@@ -178,16 +178,7 @@ public class Program {
                     commTimer.reset();
                 }
 
-                // TODO - debugs
-                if (itrCount == 1) {
-                    for (int c = 0; c < numCenters; ++c) {
-                        System.out.print(c);
-                        for (int d = 0; d < dimension + 1; ++d) {
-                            System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
-                        }
-                        System.out.println();
-                    }
-                }
+
 
                 converged = true;
                 for (int i = 0; i < numCenters; ++i) {
@@ -201,6 +192,17 @@ public class Program {
                         converged = false;
                     }
                     IntStream.range(0, dimension).forEach(j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
+                }
+
+                // TODO - debugs
+                if (itrCount == 1) {
+                    for (int c = 0; c < numCenters; ++c) {
+                        System.out.print(c);
+                        for (int d = 0; d < dimension + 1; ++d) {
+                            System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
+                        }
+                        System.out.println();
+                    }
                 }
             }
             loopTimer.stop();
