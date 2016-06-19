@@ -140,7 +140,7 @@ public class Program {
                         int pointOffset = (pointStartIdxForThread + i) * dimension;
                         int centerWithMinDist = findCenterWithMinDistance(points, centers, dimension,
                                 pointOffset);
-                        if (finalItrCount ==1){
+                        if (finalItrCount ==2){
                             System.out.println("point " + i  + " closest center "  +centerWithMinDist);
                         }
                         int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
