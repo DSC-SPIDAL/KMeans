@@ -175,12 +175,12 @@ public class Program {
 
                 // Sum over threads
                 // Place results to arrays of thread 0
-                for (int i = 1; i < numThreads; ++i) {
+                for (int t = 1; t < numThreads; ++t) {
                     for (int c = 0; c < numCenters; ++c) {
-                        for (int d = 0; d < dimension; ++d) {
-                            int offsetWithinThread = c*(dimension+1)+d;
+                        for (int d = 0; d < (dimension+1); ++d) {
+                            int offsetWithinThread = (c*(dimension+1))+d;
                             centerSumsAndCountsForThread[offsetWithinThread] += centerSumsAndCountsForThread[
-                                    (i * numCenters * (dimension + 1)) + offsetWithinThread];
+                                    (t * numCenters * (dimension + 1)) + offsetWithinThread];
                         }
                     }
                 }
