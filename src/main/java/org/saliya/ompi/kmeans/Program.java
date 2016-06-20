@@ -142,9 +142,13 @@ public class Program {
                                 pointOffset);
 
                         // TODO - debugs
-                       /* if (finalItrCount ==1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)){
-                            System.out.println("point " + i  + " closest center "  +centerWithMinDist);
-                        }*/
+                        if (finalItrCount ==1 &&
+                                (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0) &&
+                                (numThreads > 1 ? threadIdx == 1 : threadIdx == 0)){
+                            System.out.println(
+                                    "Rank: " + ParallelOps.worldProcRank + " threadIdx: " + threadIdx + " point " + i +
+                                            " closest center " + centerWithMinDist);
+                        }
                         int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
                         ++centerSumsAndCountsForThread[centerOffset+dimension];
                         accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
