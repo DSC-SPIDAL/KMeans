@@ -165,7 +165,7 @@ public class Program {
                 }
 
                 // TODO - debugs
-                if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
+                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
                     System.out.println("-- Rank: " + ParallelOps.worldProcRank + " From centerSumsAndCountsForThread before collective");
                     for (int c = 0; c < numCenters; ++c) {
                         System.out.print(c);
@@ -174,17 +174,17 @@ public class Program {
                         }
                         System.out.println();
                     }
-                }
+                }*/
 
                 if (ParallelOps.worldProcsCount > 1) {
                     commTimerWithCopy.start();
-//                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
+                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
                     commTimer.start();
                     ParallelOps.worldProcsComm.allReduce(doubleBuffer, (dimension+1) * numCenters, MPI.DOUBLE, MPI.SUM);
                     // NOTE - change to mmap call
-                    ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
+//                    ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                     commTimer.stop();
-//                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
+                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
                     commTimerWithCopy.stop();
                     times[0] += commTimerWithCopy.elapsed(TimeUnit.MILLISECONDS);
                     times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
@@ -193,7 +193,7 @@ public class Program {
                 }
 
                 // TODO - debugs
-                if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
+                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
                     System.out.println("++ Rank: " + ParallelOps.worldProcRank + " From centerSumsAndCountsForThread after collective");
                     for (int c = 0; c < numCenters; ++c) {
                         System.out.print(c);
@@ -202,7 +202,7 @@ public class Program {
                         }
                         System.out.println();
                     }
-                }
+                }*/
 
 
 
