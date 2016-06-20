@@ -186,7 +186,7 @@ public class Program {
                 }
 
                 // TODO - debugs
-                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
+                if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
                     System.out.println("-- Rank: " + ParallelOps.worldProcRank + " From centerSumsAndCountsForThread before collective");
                     for (int c = 0; c < numCenters; ++c) {
                         System.out.print(c);
@@ -195,7 +195,7 @@ public class Program {
                         }
                         System.out.println();
                     }
-                }*/
+                }
 
                 if (ParallelOps.worldProcsCount > 1) {
                     commTimerWithCopy.start();
