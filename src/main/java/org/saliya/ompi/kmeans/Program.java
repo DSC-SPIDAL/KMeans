@@ -156,6 +156,23 @@ public class Program {
                     }
                 }));
 
+                // TODO - debugs
+                if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
+                    System.out.println("** Rank: " + ParallelOps.worldProcRank +
+                            " From centerSumsAndCountsForThread before sum over threads");
+                    for (int t = 0; t < numThreads; ++t) {
+                        System.out.println("T:" + t);
+                        for (int c = 0; c < numCenters; ++c) {
+                            System.out.print("  C:" + c);
+                            for (int d = 0; d < dimension + 1; ++d) {
+                                System.out.print("  " + centerSumsAndCountsForThread[(t*numCenters*(dimension+1))+c * (dimension + 1) + d]);
+                            }
+                            System.out.println();
+                        }
+                    }
+                }
+
+
                 // Sum over threads
                 // Place results to arrays of thread 0
                 for (int i = 1; i < numThreads; ++i) {
