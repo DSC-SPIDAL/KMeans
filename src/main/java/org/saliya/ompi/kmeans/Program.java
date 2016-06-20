@@ -180,7 +180,7 @@ public class Program {
                         for (int d = 0; d < dimension; ++d) {
                             int offsetWithinThread = c*(dimension+1)+d;
                             centerSumsAndCountsForThread[offsetWithinThread] += centerSumsAndCountsForThread[
-                                    i * numCenters * (dimension + 1) + offsetWithinThread];
+                                    (i * numCenters * (dimension + 1)) + offsetWithinThread];
                         }
                     }
                 }
