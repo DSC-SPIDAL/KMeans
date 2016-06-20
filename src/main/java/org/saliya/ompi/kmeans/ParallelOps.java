@@ -346,18 +346,27 @@ public class ParallelOps {
     }
 
     public static void allReduceSum(double[] values, int offset, int length) throws MPIException {
+        /* special case when #procs per memory map group is 1. Then there's no need to go through the hassle of
+        *  making memory maps. Also, this should be done only when running in uniform settings*/
+        if (!isHeterogeneous && mmapProcsCount == 1) {
+
+        }
+
         int idx;
         mmapCollectiveBytes.position(0);
         for (int i = 0; i < length; ++i){
             idx = (i*mmapProcsCount)+mmapProcRank;
             mmapCollectiveBytes.writeDouble(idx*Double.BYTES, values[offset+i]);
         }
-        // Important barrier here - as we need to make sure writes are done
-        // to the mmap file.
-        // It's sufficient to wait on ParallelOps.mmapProcComm,
-        // but it's cleaner for timings if we wait on the whole world
-        worldProcsComm.barrier();
+
+        mmapLockOne.addAndGetInt(COUNT, 1);
+
         if (ParallelOps.isMmapLead) {
+            int count = 0;
+            while (count != mmapProcsCount){
+                count = mmapLockOne.readInt(COUNT);
+            }
+
             // Node local reduction using shared memory maps
             double sum;
             int pos;
@@ -374,9 +383,21 @@ public class ParallelOps {
 
             // Leaders participate in MPI AllReduce
             cgProcComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE,MPI.SUM);
+            if (mmapProcsCount > 1) {
+                mmapLockOne.writeInt(COUNT, 1); // order matters as no locks
+                mmapLockOne.writeBoolean(FLAG, true);
+            } else {
+                /* This is for the case if you only have 1 proc per mmap,
+                * then it needs to clear the flag and reset the count.
+                * We special case when 1 proc per mmap under uniform mode, but
+                * in a heterogeneous setting it's possible to have an mmap with 1 proc, hence this logic*/
+                mmapLockOne.writeInt(COUNT, 0); // order does NOT matter for this case
+                mmapLockOne.writeBoolean(FLAG, false);
+            }
+        } else {
+            busyWaitTillDataReady();
         }
 
-        ParallelOps.worldProcsComm.barrier();
         ParallelOps.mmapCollectiveBytes.position(0);
         for (int i = 0; i < length; ++i){
             values[i] = ParallelOps.mmapCollectiveBytes.readDouble();
