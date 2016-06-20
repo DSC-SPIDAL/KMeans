@@ -132,29 +132,15 @@ public class Program {
                 resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
                 final int finalItrCount = itrCount;
-                launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
-                    int pointsForThread = ParallelOps.pointsForThread[threadIdx];
-                    int pointStartIdxForThread = ParallelOps.pointStartIdxForThread[threadIdx];
-
-                    for (int i = 0; i < pointsForThread; ++i) {
-                        int pointOffset = (pointStartIdxForThread + i) * dimension;
-                        int centerWithMinDist = findCenterWithMinDistance(points, centers, dimension,
-                                pointOffset);
-
-                        // TODO - debugs
-                        /*if (finalItrCount ==1 &&
-                                (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0) &&
-                                (numThreads > 1 ? threadIdx == 1 : threadIdx == 0)){
-                            System.out.println(
-                                    "Rank: " + ParallelOps.worldProcRank + " threadIdx: " + threadIdx + " point " + i +
-                                            " closest center " + centerWithMinDist);
-                        }*/
-                        int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
-                        ++centerSumsAndCountsForThread[centerOffset+dimension];
-                        accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
-                        clusterAssignments[i + pointStartIdxForThread] = centerWithMinDist;
-                    }
-                }));
+                if (numThreads > 1) {
+                    launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
+                        findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
+                                clusterAssignments, threadIdx);
+                    }));
+                } else {
+                    findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
+                            clusterAssignments, 0);
+                }
 
                 // TODO - debugs
                 /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
@@ -173,14 +159,16 @@ public class Program {
                 }*/
 
 
-                // Sum over threads
-                // Place results to arrays of thread 0
-                for (int t = 1; t < numThreads; ++t) {
-                    for (int c = 0; c < numCenters; ++c) {
-                        for (int d = 0; d < (dimension+1); ++d) {
-                            int offsetWithinThread = (c*(dimension+1))+d;
-                            centerSumsAndCountsForThread[offsetWithinThread] += centerSumsAndCountsForThread[
-                                    (t * numCenters * (dimension + 1)) + offsetWithinThread];
+                if (numThreads > 1) {
+                    // Sum over threads
+                    // Place results to arrays of thread 0
+                    for (int t = 1; t < numThreads; ++t) {
+                        for (int c = 0; c < numCenters; ++c) {
+                            for (int d = 0; d < (dimension + 1); ++d) {
+                                int offsetWithinThread = (c * (dimension + 1)) + d;
+                                centerSumsAndCountsForThread[offsetWithinThread] += centerSumsAndCountsForThread[
+                                        (t * numCenters * (dimension + 1)) + offsetWithinThread];
+                            }
                         }
                     }
                 }
@@ -334,6 +322,30 @@ public class Program {
             ParallelOps.endParallelism();
         } catch (MPIException | IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void findNearesetCenters(int dimension, int numCenters, double[] points, double[] centers, double[] centerSumsAndCountsForThread, int[] clusterAssignments, Integer threadIdx) {
+        int pointsForThread = ParallelOps.pointsForThread[threadIdx];
+        int pointStartIdxForThread = ParallelOps.pointStartIdxForThread[threadIdx];
+
+        for (int i = 0; i < pointsForThread; ++i) {
+            int pointOffset = (pointStartIdxForThread + i) * dimension;
+            int centerWithMinDist = findCenterWithMinDistance(points, centers, dimension,
+                    pointOffset);
+
+            // TODO - debugs
+            /*if (finalItrCount ==1 &&
+                    (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0) &&
+                    (numThreads > 1 ? threadIdx == 1 : threadIdx == 0)){
+                System.out.println(
+                        "Rank: " + ParallelOps.worldProcRank + " threadIdx: " + threadIdx + " point " + i +
+                                " closest center " + centerWithMinDist);
+            }*/
+            int centerOffset = threadIdx*numCenters*(dimension+1) + centerWithMinDist*(dimension+1);
+            ++centerSumsAndCountsForThread[centerOffset+dimension];
+            accumulate(points, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
+            clusterAssignments[i + pointStartIdxForThread] = centerWithMinDist;
         }
     }
 
