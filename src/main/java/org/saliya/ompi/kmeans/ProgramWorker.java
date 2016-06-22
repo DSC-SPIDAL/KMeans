@@ -72,21 +72,22 @@ public class ProgramWorker {
             }
 
             converged = true;
-            for (int i = 0; i < numCenters; ++i) {
-                final int c = i;
-                IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) +
-                        j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
-                double dist = getEuclideanDistance(centerSumsAndCountsForThread, centers, dimension, (c * (dimension + 1)), c*dimension);
-                if (dist > errorThreshold) {
-                    // Can't break as center sums need to be divided to
-                    // form new centers
-                    converged = false;
-                }
-                if (threadIdx == 0) {
+            if (threadIdx == 0) {
+                for (int i = 0; i < numCenters; ++i) {
+                    final int c = i;
+                    IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) + j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
+                    double dist = getEuclideanDistance(centerSumsAndCountsForThread, centers, dimension,
+                            (c * (dimension + 1)), c * dimension);
+                    if (dist > errorThreshold) {
+                        // Can't break as center sums need to be divided to
+                        // form new centers
+                        converged = false;
+                    }
                     IntStream.range(0, dimension).forEach(
                             j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
                 }
             }
+            converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
         }
         if (threadIdx == 0) {
             loopTimer.stop();

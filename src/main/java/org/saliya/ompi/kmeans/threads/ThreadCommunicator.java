@@ -1,13 +1,14 @@
 package org.saliya.ompi.kmeans.threads;
 
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadCommunicator {
     private int numThreads;
     private AtomicInteger sumCount = new AtomicInteger(0);
-    private AtomicInteger bcastCount = new AtomicInteger(0);
+    private AtomicInteger bcastDoubleCount = new AtomicInteger(0);
+    private AtomicInteger bcastBoolCount = new AtomicInteger(0);
     private double[] doubleBuffer;
+    private boolean booleanBuffer;
 
     public ThreadCommunicator(int numThreads, int numCenters, int dimensions) {
         this.numThreads = numThreads;
@@ -51,17 +52,32 @@ public class ThreadCommunicator {
     }
 
     public void broadcastDoubleArrayOverThreads(int threadIdx, double[] vals, int root) {
-        bcastCount.compareAndSet(numThreads, 0);
+        bcastDoubleCount.compareAndSet(numThreads, 0);
         if (threadIdx == root){
             System.arraycopy(vals, 0, doubleBuffer, 0, vals.length);
         }
-        bcastCount.getAndIncrement();
+        bcastDoubleCount.getAndIncrement();
 
         if (threadIdx != root){
-            while (bcastCount.get() != numThreads) {
+            while (bcastDoubleCount.get() != numThreads) {
                 ;
             }
             System.arraycopy(doubleBuffer, 0, vals, 0, vals.length);
         }
+    }
+
+    public boolean bcastBooleanOverThreads(int threadIdx, boolean val, int root) {
+        bcastBoolCount.compareAndSet(numThreads, 0);
+        if (threadIdx == root){
+            booleanBuffer = val;
+        }
+        bcastBoolCount.getAndIncrement();
+
+        if (threadIdx != root){
+            while (bcastBoolCount.get() != numThreads) {
+                ;
+            }
+        }
+        return booleanBuffer;
     }
 }
