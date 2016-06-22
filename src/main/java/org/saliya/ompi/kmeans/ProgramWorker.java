@@ -81,7 +81,10 @@ public class ProgramWorker {
                     // form new centers
                     converged = false;
                 }
-                IntStream.range(0, dimension).forEach(j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
+                if (threadIdx == 0) {
+                    IntStream.range(0, dimension).forEach(
+                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
+                }
             }
         }
         if (threadIdx == 0) {
