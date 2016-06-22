@@ -5,16 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadCommunicator {
     private int numThreads;
-    private final int numCenters;
-    private final int dimensions;
-    private double sum = 0;
     private AtomicInteger sumCount = new AtomicInteger(0);
+    private AtomicInteger bcastCount = new AtomicInteger(0);
     private double[] doubleBuffer;
 
     public ThreadCommunicator(int numThreads, int numCenters, int dimensions) {
         this.numThreads = numThreads;
-        this.numCenters = numCenters;
-        this.dimensions = dimensions;
         doubleBuffer = new double[numThreads*numCenters*(dimensions+1)];
     }
 
@@ -55,14 +51,14 @@ public class ThreadCommunicator {
     }
 
     public void broadcastDoubleArrayOverThreads(int threadIdx, double[] vals, int root) {
-        sumCount.compareAndSet(numThreads, 0);
+        bcastCount.compareAndSet(numThreads, 0);
         if (threadIdx == root){
             System.arraycopy(vals, 0, doubleBuffer, 0, vals.length);
         }
-        sumCount.getAndIncrement();
+        bcastCount.getAndIncrement();
 
         if (threadIdx != root){
-            while (sumCount.get() != numThreads) {
+            while (bcastCount.get() != numThreads) {
                 ;
             }
             System.arraycopy(doubleBuffer, 0, vals, 0, vals.length);
