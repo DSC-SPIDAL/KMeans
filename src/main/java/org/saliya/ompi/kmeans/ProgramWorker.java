@@ -114,7 +114,9 @@ public class ProgramWorker {
 
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
             ParallelOps.worldProcsComm.reduce(times, 1, MPI.LONG, MPI.SUM, 0);
+        }
 
+        if (threadIdx == 0){
             if (!converged) {
                 print("    Stopping K-Means as max iteration count " +
                         maxIterations +
