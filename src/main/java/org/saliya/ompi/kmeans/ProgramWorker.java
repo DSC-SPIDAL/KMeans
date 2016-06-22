@@ -68,6 +68,7 @@ public class ProgramWorker {
 
             if (numThreads > 1){
                 threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, 0);
+                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread bcast");
             }
 
             converged = true;
