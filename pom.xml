@@ -6,7 +6,7 @@
 
     <groupId>org.saliya.ompi</groupId>
     <artifactId>kmeans</artifactId>
-    <version>1.0-spidal</version>
+    <version>1.0-spidal-lrt</version>
 
     <dependencies>
         <dependency>

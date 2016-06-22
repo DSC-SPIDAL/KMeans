@@ -142,23 +142,6 @@ public class Program {
                             clusterAssignments, 0);
                 }
 
-                // TODO - debugs
-                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
-                    System.out.println("** Rank: " + ParallelOps.worldProcRank +
-                            " From centerSumsAndCountsForThread before sum over threads");
-                    for (int t = 0; t < numThreads; ++t) {
-                        System.out.println("T:" + t);
-                        for (int c = 0; c < numCenters; ++c) {
-                            System.out.print("  C:" + c);
-                            for (int d = 0; d < dimension + 1; ++d) {
-                                System.out.print("  " + centerSumsAndCountsForThread[(t*numCenters*(dimension+1))+c * (dimension + 1) + d]);
-                            }
-                            System.out.println();
-                        }
-                    }
-                }*/
-
-
                 if (numThreads > 1) {
                     // Sum over threads
                     // Place results to arrays of thread 0
@@ -173,47 +156,9 @@ public class Program {
                     }
                 }
 
-                // TODO - debugs
-                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
-                    System.out.println("-- Rank: " + ParallelOps.worldProcRank + " From centerSumsAndCountsForThread before collective");
-                    for (int c = 0; c < numCenters; ++c) {
-                        System.out.print(c);
-                        for (int d = 0; d < dimension + 1; ++d) {
-                            System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
-                        }
-                        System.out.println();
-                    }
-                }*/
-
                 if (ParallelOps.worldProcsCount > 1) {
-                    commTimerWithCopy.start();
-//                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
-                    commTimer.start();
-                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, (dimension+1) * numCenters, MPI.DOUBLE, MPI.SUM);
-                    // NOTE - change to mmap call
                     ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
-                    commTimer.stop();
-//                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
-                    commTimerWithCopy.stop();
-                    times[0] += commTimerWithCopy.elapsed(TimeUnit.MILLISECONDS);
-                    times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
-                    commTimerWithCopy.reset();
-                    commTimer.reset();
                 }
-
-                // TODO - debugs
-                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
-                    System.out.println("++ Rank: " + ParallelOps.worldProcRank + " From centerSumsAndCountsForThread after collective");
-                    for (int c = 0; c < numCenters; ++c) {
-                        System.out.print(c);
-                        for (int d = 0; d < dimension + 1; ++d) {
-                            System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
-                        }
-                        System.out.println();
-                    }
-                }*/
-
-
 
                 converged = true;
                 for (int i = 0; i < numCenters; ++i) {
@@ -229,26 +174,6 @@ public class Program {
                     IntStream.range(0, dimension).forEach(j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
                 }
 
-                // TODO - debugs
-                /*if (itrCount == 1 && (ParallelOps.worldProcsCount > 1 ? ParallelOps.worldProcRank == 1 : ParallelOps.worldProcRank == 0)) {
-                    System.out.println("From centerSumsAndCountsForThread");
-                    for (int c = 0; c < numCenters; ++c) {
-                        System.out.print(c);
-                        for (int d = 0; d < dimension + 1; ++d) {
-                            System.out.print("  " + centerSumsAndCountsForThread[c * (dimension + 1) + d]);
-                        }
-                        System.out.println();
-                    }
-
-                    System.out.println("From centers");
-                    for (int c = 0; c < numCenters; ++c){
-                        System.out.print(c);
-                        for (int d = 0; d < dimension; ++d) {
-                            System.out.print("  " + centers[c * dimension + d]);
-                        }
-                        System.out.println();
-                    }
-                }*/
             }
             loopTimer.stop();
             times[2] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
@@ -373,16 +298,6 @@ public class Program {
     private static void copyToBuffer(int[] pointsPerCenter, IntBuffer buffer) {
         buffer.position(0);
         buffer.put(pointsPerCenter);
-    }
-
-    private static void copyFromBuffer(DoubleBuffer buffer, double[] centerSumsAndCounts, int length) {
-        buffer.position(0);
-        buffer.get(centerSumsAndCounts, 0, length);
-    }
-
-    private static void copyToBuffer(double[] centerSumsAndCounts, DoubleBuffer buffer, int length) {
-        buffer.position(0);
-        buffer.put(centerSumsAndCounts, 0, length);
     }
 
     private static void print(String msg) {
