@@ -59,7 +59,6 @@ public class ProgramWorker {
                 // Sum over threads
                 // Place results to arrays of thread 0
                 threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread);
-                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread sum");
             }
 
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
