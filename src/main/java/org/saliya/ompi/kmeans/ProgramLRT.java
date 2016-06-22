@@ -72,6 +72,7 @@ public class ProgramLRT {
         int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
         String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
         boolean bind = !cmd.hasOption("bind") || Boolean.parseBoolean(cmd.getOptionValue("bind"));
+        System.out.println("***bind=" + bind);
 
         ParallelOps.setupParallelism(args, mmapsPerNode, mmapDir);
         ParallelOps.setParallelDecomposition(numPoints, dimension, numCenters, numThreads);
