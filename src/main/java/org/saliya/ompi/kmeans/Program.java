@@ -141,7 +141,6 @@ public class Program {
                         if (bind) {
                             BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
                             Affinity.setAffinity(bitSet);
-                            System.out.println("Rank: " + ParallelOps.worldProcRank + " binding threads");
                         }
                         findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                                 clusterAssignments, threadIdx);
@@ -150,7 +149,6 @@ public class Program {
                     if (bind) {
                         BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
                         Affinity.setAffinity(bitSet);
-                        System.out.println("Rank: " + ParallelOps.worldProcRank + " binding main thread");
                     }
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                             clusterAssignments, 0);
