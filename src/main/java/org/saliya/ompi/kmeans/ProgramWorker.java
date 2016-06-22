@@ -98,7 +98,7 @@ public class ProgramWorker {
                         " has reached");
             }
             print("    Done in " + itrCount + " iterations and " +
-                    times[2] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
+                    times[0] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
         }
     }
 
