@@ -114,6 +114,7 @@ public class ProgramLRT {
             if (bind) {
                 BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
                 Affinity.setAffinity(bitSet);
+                System.out.println("Rank: " + ParallelOps.worldProcRank + " binding to " + bitSet);
             }
             final ProgramWorker worker = new ProgramWorker(0, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
             worker.run();
