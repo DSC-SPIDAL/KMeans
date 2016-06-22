@@ -107,6 +107,13 @@ public class ProgramLRT {
             worker.run();
         }
 
+        mainTimer.stop();
+        print("=== Program terminated successfully on " +
+                dateFormat.format(new Date()) + " took " +
+                (mainTimer.elapsed(TimeUnit.MILLISECONDS)) + " ms ===");
+
+        ParallelOps.endParallelism();
+
     }
 
     private static void print(String msg) {
