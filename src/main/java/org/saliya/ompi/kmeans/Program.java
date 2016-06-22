@@ -119,11 +119,6 @@ public class Program {
                 timer.reset();
             }
 
-            if (bind) {
-                BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
-                Affinity.setAffinity(bitSet);
-            }
-
             final double[] centerSumsAndCountsForThread = new double[numThreads*numCenters*(dimension+1)];
             final int[] clusterAssignments = new int[ParallelOps.pointsForProc];
 
