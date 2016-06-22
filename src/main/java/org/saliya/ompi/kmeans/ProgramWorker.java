@@ -80,7 +80,7 @@ public class ProgramWorker {
 
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
                 ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
-                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after MPI allreduce");
+//                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after MPI allreduce");
             }
 
             if (numThreads > 1){
@@ -110,7 +110,7 @@ public class ProgramWorker {
             }
         }
 
-        System.out.println("**Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after loop");
+//        System.out.println("**Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after loop");
 
         if (threadIdx == 0) {
             loopTimer.stop();
