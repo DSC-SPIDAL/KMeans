@@ -95,15 +95,15 @@ public class ProgramLRT {
         ThreadCommunicator tcomm = new ThreadCommunicator(numThreads, numCenters, dimension);
         if (ParallelOps.numThreads > 1) {
             launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
-                final ProgramWorker worker = new ProgramWorker(threadIdx, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers);
+                final ProgramWorker worker = new ProgramWorker(threadIdx, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
                 try {
                     worker.run();
-                } catch (MPIException e) {
+                } catch (MPIException | IOException e) {
                     e.printStackTrace();
                 }
             }));
         } else {
-            final ProgramWorker worker = new ProgramWorker(0, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers);
+            final ProgramWorker worker = new ProgramWorker(0, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
             worker.run();
         }
 

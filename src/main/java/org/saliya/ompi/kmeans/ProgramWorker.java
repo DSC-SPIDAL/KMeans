@@ -1,10 +1,20 @@
 package org.saliya.ompi.kmeans;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
+import com.google.common.primitives.Doubles;
 import mpi.MPI;
 import mpi.MPIException;
 import org.saliya.ompi.kmeans.threads.ThreadCommunicator;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.IntBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -23,8 +33,11 @@ public class ProgramWorker {
     private final int numThreads;
     private final double[] pointsForProc;
     private final double[] centers;
+    private String outputFile;
+    private final String pointsFile;
+    private final boolean isBigEndian;
 
-    public ProgramWorker(Integer threadIdx, ThreadCommunicator threadComm, int numPoints, int dimension, int numCenters, int maxIterations, double errorThreshold, int numThreads, double[] points, double[] centers) {
+    public ProgramWorker(Integer threadIdx, ThreadCommunicator threadComm, int numPoints, int dimension, int numCenters, int maxIterations, double errorThreshold, int numThreads, double[] points, double[] centers, String outputFile, String pointsFile, boolean isBigEndian) {
         this.threadIdx = threadIdx;
         this.threadComm = threadComm;
 
@@ -36,9 +49,12 @@ public class ProgramWorker {
         this.numThreads = numThreads;
         this.pointsForProc = points;
         this.centers = centers;
+        this.outputFile = outputFile;
+        this.pointsFile = pointsFile;
+        this.isBigEndian = isBigEndian;
     }
 
-    public void run() throws MPIException {
+    public void run() throws MPIException, IOException {
 
         final double[] centerSumsAndCountsForThread = new double[numCenters*(dimension+1)];
         final int[] clusterAssignments = new int[ParallelOps.pointsForThread[threadIdx]];
@@ -104,6 +120,43 @@ public class ProgramWorker {
             print("    Done in " + itrCount + " iterations and " +
                     times[0] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
         }
+
+        if (!Strings.isNullOrEmpty(outputFile)) {
+            int[] clusterAssignmentsForProc = threadComm.collect(threadIdx, clusterAssignments);
+            if (threadIdx == 0) {
+                IntBuffer intBuffer = MPI.newIntBuffer(numPoints);
+                if (ParallelOps.worldProcsCount > 1) {
+                    // Gather cluster assignments
+                    print("  Gathering cluster assignments ...");
+                    int[] lengths = ParallelOps.getLengthsArray(numPoints);
+                    int[] displas = new int[ParallelOps.worldProcsCount];
+                    displas[0] = 0;
+                    System.arraycopy(lengths, 0, displas, 1, ParallelOps.worldProcsCount - 1);
+                    Arrays.parallelPrefix(displas, (p, q) -> p + q);
+
+                    intBuffer.position(ParallelOps.pointStartIdxForProc);
+                    intBuffer.put(clusterAssignmentsForProc);
+                    ParallelOps.worldProcsComm.allGatherv(intBuffer, lengths, displas, MPI.INT);
+                    print("    Done");
+                }
+
+                if (ParallelOps.worldProcRank == 0) {
+                    print("  Writing output file ...");
+                    try (PrintWriter writer = new PrintWriter(
+                            Files.newBufferedWriter(Paths.get(outputFile), Charset.defaultCharset(), StandardOpenOption.CREATE, StandardOpenOption.WRITE), true)) {
+                        PointReader reader = PointReader.readRowRange(pointsFile, 0, numPoints, dimension, isBigEndian);
+                        double[] point = new double[dimension];
+                        for (int i = 0; i < numPoints; ++i) {
+                            reader.getPoint(i, point, dimension, 0);
+                            writer.println(i + "\t" + Doubles.join("\t", point) + "\t" +
+                                    ((ParallelOps.worldProcsCount > 1) ? intBuffer.get(i) : clusterAssignmentsForProc[i]));
+                        }
+                    }
+                    print("    Done");
+                }
+            }
+        }
+
     }
 
     private void print(String msg) {

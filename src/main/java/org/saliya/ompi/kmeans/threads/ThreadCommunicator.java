@@ -1,5 +1,7 @@
 package org.saliya.ompi.kmeans.threads;
 
+import org.saliya.ompi.kmeans.ParallelOps;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadCommunicator {
@@ -7,12 +9,15 @@ public class ThreadCommunicator {
     private AtomicInteger sumCount = new AtomicInteger(0);
     private AtomicInteger bcastDoubleCount = new AtomicInteger(0);
     private AtomicInteger bcastBoolCount = new AtomicInteger(0);
+    private AtomicInteger collectCount = new AtomicInteger(0);
     private double[] doubleBuffer;
+    private int[] intBuffer;
     private boolean booleanBuffer;
 
     public ThreadCommunicator(int numThreads, int numCenters, int dimensions) {
         this.numThreads = numThreads;
         doubleBuffer = new double[numThreads*numCenters*(dimensions+1)];
+        intBuffer = new int[ParallelOps.pointsForProc];
     }
 
     /* The  structure of the vals should be
@@ -80,4 +85,16 @@ public class ThreadCommunicator {
         }
         return booleanBuffer;
     }
+    public int[] collect(int threadIdx, int[] val) {
+        collectCount.compareAndSet(numThreads, 0);
+        int pos = ParallelOps.pointStartIdxForThread[threadIdx];
+        System.arraycopy(val, 0, intBuffer, pos, val.length);
+
+        collectCount.getAndIncrement();
+        while (collectCount.get() != numThreads) {
+            ;
+        }
+        return intBuffer;
+    }
+
 }
