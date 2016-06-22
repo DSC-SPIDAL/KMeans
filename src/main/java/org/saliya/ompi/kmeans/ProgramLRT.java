@@ -39,6 +39,7 @@ public class ProgramLRT {
         programOptions.addOption("o", true, "Cluster assignment output file");
         programOptions.addOption("mmpn", true, "mmaps per node");
         programOptions.addOption("mmdir", true, "mmaps dir");
+        programOptions.addOption("bind", true, "Bind threads [true/false]");
     }
 
     public static void main(String[] args) throws IOException, MPIException {
@@ -70,6 +71,7 @@ public class ProgramLRT {
         String pointsFile = cmd.hasOption("p") ? cmd.getOptionValue("p") : "";
         int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
         String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
+        boolean bind = !cmd.hasOption("bind") || Boolean.parseBoolean(cmd.getOptionValue("bind"));
 
         ParallelOps.setupParallelism(args, mmapsPerNode, mmapDir);
         ParallelOps.setParallelDecomposition(numPoints, dimension, numCenters, numThreads);
@@ -97,8 +99,10 @@ public class ProgramLRT {
         ThreadCommunicator tcomm = new ThreadCommunicator(numThreads, numCenters, dimension);
         if (ParallelOps.numThreads > 1) {
             launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
-                BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
-                Affinity.setAffinity(bitSet);
+                if (bind) {
+                    BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
+                    Affinity.setAffinity(bitSet);
+                }
                 try {
                     final ProgramWorker worker = new ProgramWorker(threadIdx, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
                     worker.run();
@@ -107,6 +111,10 @@ public class ProgramLRT {
                 }
             }));
         } else {
+            if (bind) {
+                BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
+                Affinity.setAffinity(bitSet);
+            }
             final ProgramWorker worker = new ProgramWorker(0, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
             worker.run();
         }
