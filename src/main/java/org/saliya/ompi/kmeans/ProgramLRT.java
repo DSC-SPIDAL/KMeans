@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 import mpi.MPI;
 import mpi.MPIException;
+import net.openhft.affinity.Affinity;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -14,6 +15,7 @@ import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -95,8 +97,10 @@ public class ProgramLRT {
         ThreadCommunicator tcomm = new ThreadCommunicator(numThreads, numCenters, dimension);
         if (ParallelOps.numThreads > 1) {
             launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
-                final ProgramWorker worker = new ProgramWorker(threadIdx, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
+                BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
+                Affinity.setAffinity(bitSet);
                 try {
+                    final ProgramWorker worker = new ProgramWorker(threadIdx, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
                     worker.run();
                 } catch (MPIException | IOException e) {
                     e.printStackTrace();
