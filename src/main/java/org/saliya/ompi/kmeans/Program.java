@@ -168,19 +168,19 @@ public class Program {
                 }
 
                 if (ParallelOps.worldProcsCount > 1) {
-                    commTimerWithCopy.start();
+//                    commTimerWithCopy.start();
 //                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
-                    commTimer.start();
+//                    commTimer.start();
 //                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, (dimension+1) * numCenters, MPI.DOUBLE, MPI.SUM);
                     // NOTE - change to mmap call
                     ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
-                    commTimer.stop();
+//                    commTimer.stop();
 //                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
-                    commTimerWithCopy.stop();
-                    times[0] += commTimerWithCopy.elapsed(TimeUnit.MILLISECONDS);
-                    times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
-                    commTimerWithCopy.reset();
-                    commTimer.reset();
+//                    commTimerWithCopy.stop();
+//                    times[0] += commTimerWithCopy.elapsed(TimeUnit.MILLISECONDS);
+//                    times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
+//                    commTimerWithCopy.reset();
+//                    commTimer.reset();
                 }
 
                 converged = true;
@@ -211,13 +211,13 @@ public class Program {
             }
             print("    Done in " + itrCount + " iterations and " +
                     times[2] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
-            if (ParallelOps.worldProcsCount > 1) {
+            /*if (ParallelOps.worldProcsCount > 1) {
                 print("    Avg. comm time " +
                         times[1] * 1.0 / ParallelOps.worldProcsCount +
                         " ms (across all MPI)");
                 print("    Avg. comm time w/ copy " +
                         times[0] * 1.0 / ParallelOps.worldProcsCount + " ms (across all MPI)");
-            }
+            }*/
 
             if (!Strings.isNullOrEmpty(outputFile)) {
                 if (ParallelOps.worldProcsCount > 1) {
