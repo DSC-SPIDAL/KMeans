@@ -72,7 +72,6 @@ public class ProgramLRT {
         int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
         String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
         boolean bind = !cmd.hasOption("bind") || Boolean.parseBoolean(cmd.getOptionValue("bind"));
-        System.out.println("***bind=" + bind);
 
         ParallelOps.setupParallelism(args, mmapsPerNode, mmapDir);
         ParallelOps.setParallelDecomposition(numPoints, dimension, numCenters, numThreads);
@@ -115,7 +114,6 @@ public class ProgramLRT {
             if (bind) {
                 BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
                 Affinity.setAffinity(bitSet);
-                System.out.println("Rank: " + ParallelOps.worldProcRank + " binding to " + bitSet);
             }
             final ProgramWorker worker = new ProgramWorker(0, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
             worker.run();
