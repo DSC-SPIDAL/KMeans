@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 import com.google.common.primitives.Doubles;
 import mpi.MPI;
 import mpi.MPIException;
+import net.openhft.affinity.Affinity;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -21,6 +22,7 @@ import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -45,6 +47,7 @@ public class Program {
         programOptions.addOption("o", true, "Cluster assignment output file");
         programOptions.addOption("mmpn", true, "mmaps per node");
         programOptions.addOption("mmdir", true, "mmaps dir");
+        programOptions.addOption("bind", true, "Bind threads [true/false]");
     }
 
     public static void main(String[] args) {
@@ -76,6 +79,7 @@ public class Program {
         String pointsFile = cmd.hasOption("p") ? cmd.getOptionValue("p") : "";
         int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
         String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
+        boolean bind = !cmd.hasOption("bind") || Boolean.parseBoolean(cmd.getOptionValue("bind"));
 
         try {
             ParallelOps.setupParallelism(args, mmapsPerNode, mmapDir);
@@ -134,10 +138,18 @@ public class Program {
                 final int finalItrCount = itrCount;
                 if (numThreads > 1) {
                     launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
+                        if (bind) {
+                            BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
+                            Affinity.setAffinity(bitSet);
+                        }
                         findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                                 clusterAssignments, threadIdx);
                     }));
                 } else {
+                    if (bind) {
+                        BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
+                        Affinity.setAffinity(bitSet);
+                    }
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                             clusterAssignments, 0);
                 }
