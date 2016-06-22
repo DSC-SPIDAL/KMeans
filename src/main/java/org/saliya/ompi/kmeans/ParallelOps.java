@@ -348,13 +348,13 @@ public class ParallelOps {
     public static void allReduceSum(double[] values, int offset, int length) throws MPIException {
         /* special case when #procs per memory map group is 1. Then there's no need to go through the hassle of
         *  making memory maps. Also, this should be done only when running in uniform settings*/
-        if (!isHeterogeneous && mmapProcsCount == 1) {
+        /*if (!isHeterogeneous && mmapProcsCount == 1) {
             for (int i = 0; i < length; ++i){
                 mmapCollectiveBytes.writeDouble(i*Double.BYTES, values[offset+i]);
             }
             worldProcsComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE, MPI.SUM);
             return;
-        }
+        }*/
 
         int idx;
         mmapCollectiveBytes.position(0);
