@@ -103,6 +103,7 @@ public class ProgramWorker {
                     IntStream.range(0, dimension).forEach(
                             j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
                 }
+                System.out.println("--Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came before end of loop");
             }
             if (numThreads > 1) {
                 converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
