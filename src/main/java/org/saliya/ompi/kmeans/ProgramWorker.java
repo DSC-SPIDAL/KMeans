@@ -75,7 +75,7 @@ public class ProgramWorker {
                 // Sum over threads
                 // Place results to arrays of thread 0
                 threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread);
-                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread sum");
+//                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread sum");
             }
 
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
@@ -85,7 +85,7 @@ public class ProgramWorker {
 
             if (numThreads > 1){
                 threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, 0);
-                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread bcast");
+//                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread bcast");
             }
 
             converged = true;
@@ -103,7 +103,7 @@ public class ProgramWorker {
                     IntStream.range(0, dimension).forEach(
                             j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
                 }
-                System.out.println("--Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came before end of loop");
+//                System.out.println("--Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came before end of loop");
             }
             if (numThreads > 1) {
                 converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
