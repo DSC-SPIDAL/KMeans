@@ -104,8 +104,13 @@ public class ProgramWorker {
                             j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
                 }
             }
-            converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
+            if (numThreads > 1) {
+                converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
+            }
         }
+
+        System.out.println("**Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after loop");
+
         if (threadIdx == 0) {
             loopTimer.stop();
             times[0] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
