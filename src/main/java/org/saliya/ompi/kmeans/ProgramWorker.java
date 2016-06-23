@@ -63,18 +63,18 @@ public class ProgramWorker {
         boolean converged = false;
         print("  Computing K-Means .. ");
         Stopwatch loopTimer = threadIdx == 0 ? Stopwatch.createStarted(): null;
-        Stopwatch computTimer = Stopwatch.createUnstarted();
-        long[] times = new long[]{0,0};
+        Stopwatch timer = Stopwatch.createUnstarted();
+        long[] times = new long[]{0,0,0};
         while (!converged && itrCount < maxIterations) {
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
-            computTimer.start();
+            timer.start();
             findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
                     clusterAssignments, threadIdx);
-            computTimer.stop();
-            times[1] += computTimer.elapsed(TimeUnit.MILLISECONDS);
-            computTimer.reset();
+            timer.stop();
+            times[1] += timer.elapsed(TimeUnit.MILLISECONDS);
+            timer.reset();
 
             if (numThreads > 1) {
                 // Sum over threads
@@ -82,9 +82,13 @@ public class ProgramWorker {
                 threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread);
             }
 
+            timer.start();
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
                 ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
             }
+            timer.stop();
+            times[2] += timer.elapsed(TimeUnit.MILLISECONDS);
+            timer.reset();
 
             if (numThreads > 1){
                 threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, 0);
@@ -118,7 +122,7 @@ public class ProgramWorker {
         }
 
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-            ParallelOps.worldProcsComm.reduce(times, 2, MPI.LONG, MPI.SUM, 0);
+            ParallelOps.worldProcsComm.reduce(times, 3, MPI.LONG, MPI.SUM, 0);
         }
 
         if (threadIdx == 0){
@@ -130,6 +134,7 @@ public class ProgramWorker {
             print("    Done in " + itrCount + " iterations and " +
                     times[0] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
             print("    Compute time (thread 0 avg across MPI) " + times[1] * 1.0 / ParallelOps.worldProcsCount + " ms");
+            print("    Comm time (thread 0 avg across MPI) " + times[2] * 1.0 / ParallelOps.worldProcsCount + " ms");
         }
 
         if (!Strings.isNullOrEmpty(outputFile)) {
