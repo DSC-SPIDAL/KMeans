@@ -1,6 +1,7 @@
 package org.saliya.ompi.kmeans;
 
 import com.google.common.base.Optional;
+import com.google.common.io.LittleEndianDataInputStream;
 import com.google.common.io.LittleEndianDataOutputStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -141,6 +142,43 @@ public class DataGenerator
                     }
                     centerStream.writeDouble(coord);
                 }
+            }
+        }
+
+        readPointsAsBinary(n, d, k, isBigEndian, outputDir);
+    }
+
+    private static void readPointsAsBinary(
+            int n, int d, int k, boolean isBigEndian, String outputDir)
+            throws IOException
+    {
+        Path pointsFile = Paths.get(outputDir, "points.bin");
+        Path centersFile = Paths.get(outputDir, "centers.bin");
+        try (
+                BufferedInputStream pointBufferedStream = new BufferedInputStream(
+                        Files.newInputStream(pointsFile, StandardOpenOption.READ));
+                BufferedInputStream centerBufferedStream = new BufferedInputStream(
+                        Files.newInputStream(centersFile, StandardOpenOption.READ)))
+        {
+            System.out.println("Is big endian: "  + isBigEndian);
+            DataInput pointStream = isBigEndian ? new DataInputStream(
+                    pointBufferedStream) : new LittleEndianDataInputStream(
+                    pointBufferedStream);
+            DataInput centerStream = isBigEndian ? new DataInputStream(
+                    centerBufferedStream) : new LittleEndianDataInputStream(
+                    centerBufferedStream);
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < d; j++)
+                {
+                    //double coord = Math.random();
+                    System.out.print(pointStream.readDouble() + "  ");
+                    if (i >= k)
+                    {
+                        continue;
+                    }
+                }
+                System.out.println();
             }
         }
     }
