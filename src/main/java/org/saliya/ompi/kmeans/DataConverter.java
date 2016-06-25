@@ -1,6 +1,7 @@
 package org.saliya.ompi.kmeans;
 
 import com.google.common.base.Optional;
+import com.google.common.io.LittleEndianDataInputStream;
 import com.google.common.io.LittleEndianDataOutputStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -20,9 +21,11 @@ public class DataConverter {
 
     static {
         programOptions.addOption("i", true, "Input file");
+        programOptions.addOption("n", true, "Number of points");
         programOptions.addOption("d", true, "Dimensionality");
         programOptions.addOption("b", true, "Is big-endian?");
         programOptions.addOption("o", true, "Output directory");
+        programOptions.addOption("t", true, "Type [tb | bb | bt]");
     }
 
     public static void main(String[] args) throws IOException {
@@ -43,17 +46,53 @@ public class DataConverter {
         }
 
         String file = cmd.getOptionValue("i");
+        int n = Integer.parseInt(cmd.getOptionValue("n"));
         int d = parseInt(cmd.getOptionValue("d"));
         boolean isBigEndian = Boolean.parseBoolean(cmd.getOptionValue("b"));
         String outputDir = cmd.getOptionValue("o");
+        String type = cmd.getOptionValue("t").toLowerCase();
 
-
-        convertToBinary(
-            file, d, isBigEndian, outputDir);
-
+        switch (type){
+            case "tb":
+                convertTextToBinary(
+                        file, d, isBigEndian, outputDir);
+                break;
+            case "bb":
+                convertBinaryToBinary(file, n, d, isBigEndian, outputDir);
+                break;
+            case "bt":
+                convertBinaryToText(file, n, d, isBigEndian, outputDir);
+                break;
+            default:
+                throw new RuntimeException("Unsupported type " + type + " Has to be either tb or bb or bt");
+        }
     }
 
-    private static void convertToBinary(
+    private static void convertBinaryToText(String file, int n, int d, boolean isBigEndian, String outputDir) {
+        throw new RuntimeException("Not implemented yet :)");
+    }
+
+    private static void convertBinaryToBinary(String file, int n, int d, boolean isBigEndian, String outputDir) throws IOException {
+        String name = com.google.common.io.Files.getNameWithoutExtension(file);
+        Path outFile = Paths.get(outputDir, name+ (isBigEndian ? "_LittleEndian" : "_BigEndian") +".bin");
+        try (BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(Paths.get(file), StandardOpenOption.READ));
+             BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(outFile, StandardOpenOption.CREATE))) {
+
+            DataInput inStream = isBigEndian ? new DataInputStream(bis) : new LittleEndianDataInputStream(bis);
+            // The idea is to change from big endian to little endian and vice versa
+            DataOutput outStream = isBigEndian ? new LittleEndianDataOutputStream(bos) : new DataOutputStream(bos);
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < d; j++)
+                {
+                    outStream.writeDouble(inStream.readDouble());
+                }
+            }
+        }
+    }
+
+    private static void convertTextToBinary(
         String file, int d, boolean isBigEndian, String outputDir)
         throws IOException {
         String name = com.google.common.io.Files.getNameWithoutExtension(file);
