@@ -121,6 +121,7 @@ public class DataGenerator
                 BufferedOutputStream(
                 Files.newOutputStream(centersFile, StandardOpenOption.CREATE)))
         {
+			System.out.println("Is big endian: "  + isBigEndian);
             DataOutput pointStream = isBigEndian ? new DataOutputStream(
                 pointBufferedStream) : new LittleEndianDataOutputStream(
                 pointBufferedStream);
@@ -131,7 +132,8 @@ public class DataGenerator
             {
                 for (int j = 0; j < d; j++)
                 {
-                    double coord = Math.random();
+                    //double coord = Math.random();
+                    double coord = 13;
                     pointStream.writeDouble(coord);
                     if (i >= k)
                     {
