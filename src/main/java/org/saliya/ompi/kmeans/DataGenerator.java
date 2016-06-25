@@ -133,8 +133,7 @@ public class DataGenerator
             {
                 for (int j = 0; j < d; j++)
                 {
-                    //double coord = Math.random();
-                    double coord = 13;
+                    double coord = Math.random();
                     pointStream.writeDouble(coord);
                     if (i >= k)
                     {
@@ -144,8 +143,6 @@ public class DataGenerator
                 }
             }
         }
-
-        readPointsAsBinary(n, d, k, isBigEndian, outputDir);
     }
 
     private static void readPointsAsBinary(
