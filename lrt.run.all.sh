@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#can be 1/0 to set thread pinning
+#can be true/false to set thread pinning
 explicitbind=$1
 #can be core/socket/none
 procbind=$2
