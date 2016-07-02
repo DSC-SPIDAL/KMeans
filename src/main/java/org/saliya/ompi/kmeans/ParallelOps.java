@@ -223,6 +223,7 @@ public class ParallelOps {
         /* Allocate memory maps for collective communications like AllReduce and Broadcast */
         mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective." + uuid + ".bin";
         mmapLockFileNameOne = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapLockOne." + uuid + ".bin";
+        mmapEntryLockFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapEntryLock." + uuid + ".bin";
         try (FileChannel mmapCollectiveFc = FileChannel
                 .open(Paths.get(mmapDir, mmapCollectiveFileName),
                         StandardOpenOption.CREATE, StandardOpenOption.READ,
