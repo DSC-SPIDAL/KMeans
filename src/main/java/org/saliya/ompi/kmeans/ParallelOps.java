@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -76,7 +77,9 @@ public class ParallelOps {
 
     public static String mmapCollectiveFileName;
     public static String mmapLockFileNameOne;
+    public static String mmapEntryLockFileName;
     public static Bytes mmapLockOne;
+    public static Bytes mmapEntryLock;
     public static Bytes mmapCollectiveBytes;
     public static ByteBuffer mmapCollectiveByteBuffer;
 
@@ -201,9 +204,25 @@ public class ParallelOps {
 
         boolean status = new File(mmapDir).mkdirs();
 
+        byte[] bytes = null;
+        if (worldProcRank == 0){
+            UUID id = UUID.randomUUID();
+            bytes = id.toString().getBytes();
+            intBuffer.put(0, bytes.length);
+        }
+
+        worldProcsComm.bcast(intBuffer, 1, MPI.INT, 0);
+        int length = intBuffer.get(0);
+        if (worldProcRank != 0) {
+            bytes = new byte[length];
+        }
+        worldProcsComm.bcast(bytes, bytes.length, MPI.BYTE, 0);
+        String uuid = new String(bytes);
+
         /* Allocate memory maps for collective communications like AllReduce and Broadcast */
-        mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective.bin";
-        mmapLockFileNameOne = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapLockOne.bin";
+        mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective." + uuid + ".bin";
+        mmapLockFileNameOne = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapLockOne." + uuid + ".bin";
+        mmapEntryLockFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapEntryLock." + uuid + ".bin";
         try (FileChannel mmapCollectiveFc = FileChannel
                 .open(Paths.get(mmapDir, mmapCollectiveFileName),
                         StandardOpenOption.CREATE, StandardOpenOption.READ,
@@ -227,6 +246,14 @@ public class ParallelOps {
             if (isMmapLead){
                 mmapLockOne.writeBoolean(FLAG, false);
                 mmapLockOne.writeLong(COUNT, 0);
+            }
+
+            lockFile = new File(mmapDir, mmapEntryLockFileName);
+            fc = new RandomAccessFile(lockFile, "rw").getChannel();
+            mmapEntryLock = ByteBufferBytes.wrap(fc.map(FileChannel.MapMode.READ_WRITE, 0, 64));
+            if (isMmapLead){
+                mmapEntryLock.writeBoolean(FLAG, false);
+                mmapEntryLock.writeLong(COUNT, 0);
             }
         }
 
@@ -348,115 +375,82 @@ public class ParallelOps {
     public static void allReduceSum(double[] values, int offset, int length) throws MPIException {
         /* special case when #procs per memory map group is 1. Then there's no need to go through the hassle of
         *  making memory maps. Also, this should be done only when running in uniform settings*/
-        if (!isHeterogeneous && mmapProcsCount == 1) {
-            for (int i = 0; i < length; ++i){
-                mmapCollectiveBytes.writeDouble(i*Double.BYTES, values[offset+i]);
-            }
-            worldProcsComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE, MPI.SUM);
-        } else {
+//        if (!isHeterogeneous && mmapProcsCount == 1) {
+//            for (int i = 0; i < length; ++i){
+//                mmapCollectiveBytes.writeDouble(i*Double.BYTES, values[offset+i]);
+//            }
+//            worldProcsComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE, MPI.SUM);
+//        } else {
+//
+//            /* Safety logic to make sure all procs in the mmap has reached here. Otherwise, it's possible that
+//            * one (or more) procs from a same mmap may have come here while a previous call to this collective
+//            * is being carried out by the other procs in the same mmap. Also, note the use of a separate lock for this,
+//            * without that there's a chance to crash/hang */
+//            if (mmapEntryLock.addAndGetInt(COUNT, 1) == mmapProcsCount){
+//                mmapEntryLock.writeInt(COUNT, 0);
+//            } else {
+//                int count;
+//                do  {
+//                    count = mmapEntryLock.readInt(COUNT);
+//                } while (count != 0);
+//            }
+//
+//            int idx;
+//            mmapCollectiveBytes.position(0);
+//            for (int i = 0; i < length; ++i) {
+//                idx = (i * mmapProcsCount) + mmapProcRank;
+//                mmapCollectiveBytes.writeDouble(idx * Double.BYTES, values[offset + i]);
+//            }
+//
+//            mmapLockOne.addAndGetInt(COUNT, 1);
+//
+//            if (ParallelOps.isMmapLead) {
+//                int count = 0;
+//                while (count != mmapProcsCount) {
+//                    count = mmapLockOne.readInt(COUNT);
+//                }
+//
+//                // Node local reduction using shared memory maps
+//                double sum;
+//                int pos;
+//                for (int i = 0; i < length; ++i) {
+//                    sum = 0.0;
+//                    pos = i * mmapProcsCount * Double.BYTES;
+//                    for (int j = 0; j < mmapProcsCount; ++j) {
+//                        ParallelOps.mmapCollectiveBytes.position(pos);
+//                        sum += mmapCollectiveBytes.readDouble();
+//                        pos += Double.BYTES;
+//                    }
+//                    mmapCollectiveBytes.writeDouble(i * Double.BYTES, sum);
+//                }
+//
+//                // Leaders participate in MPI AllReduce
+//                cgProcComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE, MPI.SUM);
+//                if (mmapProcsCount > 1) {
+//                    mmapLockOne.writeInt(COUNT, 1); // order matters as no locks
+//                    mmapLockOne.writeBoolean(FLAG, true);
+//                } else {
+//                /* This is for the case if you only have 1 proc per mmap,
+//                * then it needs to clear the flag and reset the count.
+//                * We special case when 1 proc per mmap under uniform mode, but
+//                * in a heterogeneous setting it's possible to have an mmap with 1 proc, hence this logic*/
+//                    mmapLockOne.writeInt(COUNT, 0); // order does NOT matter for this case
+//                    mmapLockOne.writeBoolean(FLAG, false);
+//                }
+//            } else {
+//                busyWaitTillDataReady();
+//            }
+//        }
 
-            int idx;
-            mmapCollectiveBytes.position(0);
-            for (int i = 0; i < length; ++i) {
-                idx = (i * mmapProcsCount) + mmapProcRank;
-                mmapCollectiveBytes.writeDouble(idx * Double.BYTES, values[offset + i]);
-            }
-
-            mmapLockOne.addAndGetInt(COUNT, 1);
-
-            if (ParallelOps.isMmapLead) {
-                int count = 0;
-                while (count != mmapProcsCount) {
-                    count = mmapLockOne.readInt(COUNT);
-                }
-
-                // Node local reduction using shared memory maps
-                double sum;
-                int pos;
-                for (int i = 0; i < length; ++i) {
-                    sum = 0.0;
-                    pos = i * mmapProcsCount * Double.BYTES;
-                    for (int j = 0; j < mmapProcsCount; ++j) {
-                        ParallelOps.mmapCollectiveBytes.position(pos);
-                        sum += mmapCollectiveBytes.readDouble();
-                        pos += Double.BYTES;
-                    }
-                    mmapCollectiveBytes.writeDouble(i * Double.BYTES, sum);
-                }
-
-                // Leaders participate in MPI AllReduce
-                cgProcComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE, MPI.SUM);
-                if (mmapProcsCount > 1) {
-                    mmapLockOne.writeInt(COUNT, 1); // order matters as no locks
-                    mmapLockOne.writeBoolean(FLAG, true);
-                } else {
-                /* This is for the case if you only have 1 proc per mmap,
-                * then it needs to clear the flag and reset the count.
-                * We special case when 1 proc per mmap under uniform mode, but
-                * in a heterogeneous setting it's possible to have an mmap with 1 proc, hence this logic*/
-                    mmapLockOne.writeInt(COUNT, 0); // order does NOT matter for this case
-                    mmapLockOne.writeBoolean(FLAG, false);
-                }
-            } else {
-                busyWaitTillDataReady();
-            }
+        for (int i = 0; i < length; ++i){
+            mmapCollectiveBytes.writeDouble(i*Double.BYTES, values[offset+i]);
         }
+        worldProcsComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE, MPI.SUM);
 
         ParallelOps.mmapCollectiveBytes.position(0);
         for (int i = 0; i < length; ++i){
             values[i] = ParallelOps.mmapCollectiveBytes.readDouble();
         }
-    }
-
-    public static void broadcast(ByteBuffer buffer, int length, int root) throws MPIException, InterruptedException, NoSuchFieldException {
-        /* for now let's assume a second invocation of broadcast will NOT happen while some ranks are still
-        *  doing the first invocation. If that happens, the current implementation can screw up */
-
-        /* special case when #procs per memory map group is 1. Then there's no need to go through the hassle of
-        *  making memory maps. Also, this should be done only when running in uniform settings*/
-        if (!isHeterogeneous && mmapProcsCount == 1){
-            worldProcsComm.bcast(buffer, length, MPI.BYTE, root);
-            return;
-        }
-
-        int cgProcRankOfMmapLeaderForRoot =  cgProcCommRankOfMmapLeaderForRank.get(root);
-        if (root == worldProcRank){
-            /* I am the root and I've the content, so write to my shared buffer */
-            mmapCollectiveBytes.position(0);
-            buffer.position(0);
-            for (int i = 0; i < length; ++i) {
-                mmapCollectiveBytes.writeByte(i, buffer.get(i));
-            }
-            mmapLockOne.writeInt(COUNT,1); // order matters as we don't have locks now
-            mmapLockOne.writeBoolean(FLAG, true);
-
-            if (!isMmapLead) return;
-        }
-
-        if (isRankWithinMmap(root) && !isMmapLead){
-            /* I happen to be within the same mmap as root and I am not an mmaplead,
-               so read from shared buffer if root is done writing to it.
-               Note, the condition (&& root != worldProcRank) is not necessary
-               due to the return statement in above if logic */
-            busyWaitTillDataReady();
-        } else {
-            if (ParallelOps.isMmapLead) {
-                if (isRankWithinMmap(root) && root != worldProcRank) {
-                    busyWaitTillDataReady();
-                }
-                cgProcComm.bcast(mmapCollectiveByteBuffer, length, MPI.BYTE, cgProcRankOfMmapLeaderForRoot);
-                if (!isRankWithinMmap(root)) {
-                    mmapLockOne.writeInt(COUNT, 1); // order matters as we don't have locks now
-                    mmapLockOne.writeBoolean(FLAG, true);
-                }
-            } else {
-                busyWaitTillDataReady();
-            }
-        }
-
-        long fromAddress = getDirectByteBufferAddressViaField(mmapCollectiveByteBuffer);
-        long toAddress = getDirectByteBufferAddressViaField(buffer);
-        UNSAFE.copyMemory(fromAddress, toAddress, length);
     }
 
     private static void busyWaitTillDataReady(){
