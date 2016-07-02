@@ -122,6 +122,11 @@ public class Program {
             final double[] centerSumsAndCountsForThread = new double[numThreads*numCenters*(dimension+1)];
             final int[] clusterAssignments = new int[ParallelOps.pointsForProc];
 
+            // Bind all process case here
+            if (numThreads == 1 && bind){
+                BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
+                Affinity.setAffinity(bitSet);
+            }
 
             int itrCount = 0;
             boolean converged = false;
@@ -145,10 +150,6 @@ public class Program {
                                 clusterAssignments, threadIdx);
                     }));
                 } else {
-                    if (bind) {
-                        BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
-                        Affinity.setAffinity(bitSet);
-                    }
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                             clusterAssignments, 0);
                 }
