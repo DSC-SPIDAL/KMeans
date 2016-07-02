@@ -79,6 +79,7 @@ public class Program {
         String pointsFile = cmd.hasOption("p") ? cmd.getOptionValue("p") : "";
         int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
         String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
+        // the default is to bind
         boolean bind = !cmd.hasOption("bind") || Boolean.parseBoolean(cmd.getOptionValue("bind"));
 
         try {
