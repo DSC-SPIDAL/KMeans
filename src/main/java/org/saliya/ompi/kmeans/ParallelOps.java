@@ -450,57 +450,6 @@ public class ParallelOps {
 
     }
 
-    public static void broadcast(ByteBuffer buffer, int length, int root) throws MPIException, InterruptedException, NoSuchFieldException {
-        /* for now let's assume a second invocation of broadcast will NOT happen while some ranks are still
-        *  doing the first invocation. If that happens, the current implementation can screw up */
-
-        /* special case when #procs per memory map group is 1. Then there's no need to go through the hassle of
-        *  making memory maps. Also, this should be done only when running in uniform settings*/
-        if (!isHeterogeneous && mmapProcsCount == 1){
-            worldProcsComm.bcast(buffer, length, MPI.BYTE, root);
-            return;
-        }
-
-        int cgProcRankOfMmapLeaderForRoot =  cgProcCommRankOfMmapLeaderForRank.get(root);
-        if (root == worldProcRank){
-            /* I am the root and I've the content, so write to my shared buffer */
-            mmapCollectiveBytes.position(0);
-            buffer.position(0);
-            for (int i = 0; i < length; ++i) {
-                mmapCollectiveBytes.writeByte(i, buffer.get(i));
-            }
-            mmapLockOne.writeInt(COUNT,1); // order matters as we don't have locks now
-            mmapLockOne.writeBoolean(FLAG, true);
-
-            if (!isMmapLead) return;
-        }
-
-        if (isRankWithinMmap(root) && !isMmapLead){
-            /* I happen to be within the same mmap as root and I am not an mmaplead,
-               so read from shared buffer if root is done writing to it.
-               Note, the condition (&& root != worldProcRank) is not necessary
-               due to the return statement in above if logic */
-            busyWaitTillDataReady();
-        } else {
-            if (ParallelOps.isMmapLead) {
-                if (isRankWithinMmap(root) && root != worldProcRank) {
-                    busyWaitTillDataReady();
-                }
-                cgProcComm.bcast(mmapCollectiveByteBuffer, length, MPI.BYTE, cgProcRankOfMmapLeaderForRoot);
-                if (!isRankWithinMmap(root)) {
-                    mmapLockOne.writeInt(COUNT, 1); // order matters as we don't have locks now
-                    mmapLockOne.writeBoolean(FLAG, true);
-                }
-            } else {
-                busyWaitTillDataReady();
-            }
-        }
-
-        long fromAddress = getDirectByteBufferAddressViaField(mmapCollectiveByteBuffer);
-        long toAddress = getDirectByteBufferAddressViaField(buffer);
-        UNSAFE.copyMemory(fromAddress, toAddress, length);
-    }
-
     private static void busyWaitTillDataReady(){
         boolean ready = false;
         int count;
