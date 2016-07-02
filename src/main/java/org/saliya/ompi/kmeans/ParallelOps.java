@@ -214,10 +214,11 @@ public class ParallelOps {
         bytes = new byte[intBuffer.get(0)];
         worldProcsComm.bcast(bytes, bytes.length, MPI.BYTE, 0);
         String uuid = new String(bytes);
+        System.out.println("Rank: " + worldProcRank + " " + uuid);
 
         /* Allocate memory maps for collective communications like AllReduce and Broadcast */
-        mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective." + uuid + ".bin";
-        mmapLockFileNameOne = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapLockOne." + uuid +".bin";
+        mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective." +  ".bin";
+        mmapLockFileNameOne = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapLockOne." + ".bin";
         try (FileChannel mmapCollectiveFc = FileChannel
                 .open(Paths.get(mmapDir, mmapCollectiveFileName),
                         StandardOpenOption.CREATE, StandardOpenOption.READ,
