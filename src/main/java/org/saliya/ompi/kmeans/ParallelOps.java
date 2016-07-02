@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -199,11 +200,23 @@ public class ParallelOps {
         ParallelOps.pointDimension = pointDimension;
         decomposeDomain(totalPoints);
 
+
         boolean status = new File(mmapDir).mkdirs();
 
+        String uuid = "";
+        if (worldProcRank == 0){
+            UUID id = UUID.randomUUID();
+            uuid = id.toString();
+        }
+        intBuffer.put(0, uuid.length());
+        worldProcsComm.bcast(intBuffer, 1, MPI.INT, 0);
+        byte[] bytes = uuid.getBytes();
+        worldProcsComm.bcast(bytes, intBuffer.get(0), MPI.BYTE, 0);
+        uuid = new String(bytes);
+
         /* Allocate memory maps for collective communications like AllReduce and Broadcast */
-        mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective.bin";
-        mmapLockFileNameOne = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapLockOne.bin";
+        mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective." + uuid + ".bin";
+        mmapLockFileNameOne = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapLockOne." + uuid +".bin";
         try (FileChannel mmapCollectiveFc = FileChannel
                 .open(Paths.get(mmapDir, mmapCollectiveFileName),
                         StandardOpenOption.CREATE, StandardOpenOption.READ,
