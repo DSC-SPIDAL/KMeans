@@ -122,21 +122,19 @@ public class Program {
             final double[] centerSumsAndCountsForThread = new double[numThreads*numCenters*(dimension+1)];
             final int[] clusterAssignments = new int[ParallelOps.pointsForProc];
 
-            // Bind all process case here
-            if (numThreads == 1 && bind){
-                BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
-                Affinity.setAffinity(bitSet);
-            }
 
             int itrCount = 0;
             boolean converged = false;
             print("  Computing K-Means .. ");
             Stopwatch loopTimer = Stopwatch.createStarted();
+            Stopwatch commTimerWithCopy = Stopwatch.createUnstarted();
+            Stopwatch commTimer = Stopwatch.createUnstarted();
             long[] times = new long[]{0, 0, 0};
             while (!converged && itrCount < maxIterations) {
                 ++itrCount;
                 resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
+                final int finalItrCount = itrCount;
                 if (numThreads > 1) {
                     launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
                         if (bind) {
@@ -147,6 +145,10 @@ public class Program {
                                 clusterAssignments, threadIdx);
                     }));
                 } else {
+                    if (bind) {
+                        BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
+                        Affinity.setAffinity(bitSet);
+                    }
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                             clusterAssignments, 0);
                 }
@@ -166,8 +168,19 @@ public class Program {
                 }
 
                 if (ParallelOps.worldProcsCount > 1) {
+//                    commTimerWithCopy.start();
+//                    copyToBuffer(centerSumsAndCountsForThread, doubleBuffer, numCenters*(dimension+1));
+//                    commTimer.start();
+//                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, (dimension+1) * numCenters, MPI.DOUBLE, MPI.SUM);
                     // NOTE - change to mmap call
                     ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
+//                    commTimer.stop();
+//                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
+//                    commTimerWithCopy.stop();
+//                    times[0] += commTimerWithCopy.elapsed(TimeUnit.MILLISECONDS);
+//                    times[1] += commTimer.elapsed(TimeUnit.MILLISECONDS);
+//                    commTimerWithCopy.reset();
+//                    commTimer.reset();
                 }
 
                 converged = true;
