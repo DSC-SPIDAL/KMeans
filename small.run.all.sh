@@ -5,5 +5,5 @@ nodefile=nodes.$name.txt
 
 #./small.run.generic.sh 1 1 $nodefile $nodes 1 g
 #./small.run.generic.sh 1 2 $nodefile $nodes 1 g
-./small.run.generic.sh 1 1 $nodefile $nodes 1 g
-#./small.run.generic.sh 1 2 $nodefile $nodes 1 g
+#./small.run.generic.sh 1 1 $nodefile $nodes 1 g
+./small.run.generic.sh 2 12 $nodefile $nodes 1 g
