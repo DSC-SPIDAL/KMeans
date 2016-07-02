@@ -77,7 +77,9 @@ public class ParallelOps {
 
     public static String mmapCollectiveFileName;
     public static String mmapLockFileNameOne;
+    public static String mmapEntryLockFileName;
     public static Bytes mmapLockOne;
+    public static Bytes mmapEntryLock;
     public static Bytes mmapCollectiveBytes;
     public static ByteBuffer mmapCollectiveByteBuffer;
 
@@ -245,6 +247,14 @@ public class ParallelOps {
                 mmapLockOne.writeBoolean(FLAG, false);
                 mmapLockOne.writeLong(COUNT, 0);
             }
+
+            lockFile = new File(mmapDir, mmapEntryLockFileName);
+            fc = new RandomAccessFile(lockFile, "rw").getChannel();
+            mmapEntryLock = ByteBufferBytes.wrap(fc.map(FileChannel.MapMode.READ_WRITE, 0, 64));
+            if (isMmapLead){
+                mmapEntryLock.writeBoolean(FLAG, false);
+                mmapEntryLock.writeLong(COUNT, 0);
+            }
         }
 
         cgProcCommRankOfMmapLeaderForRank = new HashMap<>(worldProcsCount);
@@ -372,6 +382,19 @@ public class ParallelOps {
             worldProcsComm.allReduce(mmapCollectiveByteBuffer, length, MPI.DOUBLE, MPI.SUM);
         } else {
 
+            /* Safety logic to make sure all procs in the mmap has reached here. Otherwise, it's possible that
+            * one (or more) procs from a same mmap may have come here while a previous call to this collective
+            * is being carried out by the other procs in the same mmap. Also, note the use of a separate lock for this,
+            * without that there's a chance to crash/hang */
+            if (mmapEntryLock.addAndGetInt(COUNT, 1) == mmapProcsCount){
+                mmapEntryLock.writeInt(COUNT, 0);
+            } else {
+                int count;
+                do  {
+                    count = mmapEntryLock.readInt(COUNT);
+                } while (count != 0);
+            }
+
             int idx;
             mmapCollectiveBytes.position(0);
             for (int i = 0; i < length; ++i) {
@@ -423,6 +446,8 @@ public class ParallelOps {
         for (int i = 0; i < length; ++i) {
             values[i] = ParallelOps.mmapCollectiveBytes.readDouble();
         }
+
+
     }
 
     public static void broadcast(ByteBuffer buffer, int length, int root) throws MPIException, InterruptedException, NoSuchFieldException {
