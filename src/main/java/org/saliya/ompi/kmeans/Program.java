@@ -147,8 +147,14 @@ public class Program {
                             BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
                             Affinity.setAffinity(bitSet);
                         }
+
                         findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                                 clusterAssignments, threadIdx);
+
+                        // TODO - debugs
+                        if (ParallelOps.worldProcRank == 0 && threadIdx == 0) {
+                            System.out.println("iteration " + finalItrCount + " done");
+                        }
                     }));
                 } else {
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
