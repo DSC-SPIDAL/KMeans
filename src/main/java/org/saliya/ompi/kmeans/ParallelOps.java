@@ -208,14 +208,15 @@ public class ParallelOps {
             UUID id = UUID.randomUUID();
             bytes = id.toString().getBytes();
             intBuffer.put(0, bytes.length);
-            System.out.println("***Rank:" + worldProcRank + " " + new String(bytes));
+            System.out.println("***Rank:" + worldProcRank + " " + new String(bytes) + " " + bytes.length);
         }
 
         worldProcsComm.bcast(intBuffer, 1, MPI.INT, 0);
+        System.out.println("---Rank:" + worldProcRank + " length " + intBuffer.get(0));
         bytes = new byte[intBuffer.get(0)];
         worldProcsComm.bcast(bytes, bytes.length, MPI.BYTE, 0);
         String uuid = new String(bytes);
-        System.out.println("Rank: " + worldProcRank + " " + uuid);
+//        System.out.println("Rank: " + worldProcRank + " " + uuid);
 
         /* Allocate memory maps for collective communications like AllReduce and Broadcast */
         mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective." +  ".bin";
