@@ -203,16 +203,17 @@ public class ParallelOps {
 
         boolean status = new File(mmapDir).mkdirs();
 
-        String uuid = "";
+        byte[] bytes = null;
         if (worldProcRank == 0){
             UUID id = UUID.randomUUID();
-            uuid = id.toString();
+            bytes = id.toString().getBytes();
+            intBuffer.put(0, bytes.length);
         }
-        intBuffer.put(0, uuid.length());
+
         worldProcsComm.bcast(intBuffer, 1, MPI.INT, 0);
-        byte[] bytes = uuid.getBytes();
-        worldProcsComm.bcast(bytes, intBuffer.get(0), MPI.BYTE, 0);
-        uuid = new String(bytes);
+        bytes = new byte[intBuffer.get(0)];
+        worldProcsComm.bcast(bytes, bytes.length, MPI.BYTE, 0);
+        String uuid = new String(bytes);
 
         /* Allocate memory maps for collective communications like AllReduce and Broadcast */
         mmapCollectiveFileName = machineName + ".mmapId." + mmapIdLocalToNode + ".mmapCollective." + uuid + ".bin";
