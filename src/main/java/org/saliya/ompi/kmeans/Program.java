@@ -150,11 +150,6 @@ public class Program {
 
                         findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                                 clusterAssignments, threadIdx);
-
-//                        // TODO - debugs
-//                        if (ParallelOps.worldProcRank == 0 && threadIdx == 0) {
-//                            System.out.println("iteration " + finalItrCount + " done");
-//                        }
                     }));
                 } else {
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
@@ -183,10 +178,6 @@ public class Program {
                     // NOTE - change to mmap call
                     ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
 
-                    // TODO - debugs
-                    if (ParallelOps.worldProcRank == 0) {
-                        System.out.println("iteration " + finalItrCount + " done after allReduceSum");
-                    }
 //                    commTimer.stop();
 //                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
 //                    commTimerWithCopy.stop();
