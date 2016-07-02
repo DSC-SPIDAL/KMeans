@@ -208,6 +208,7 @@ public class ParallelOps {
             UUID id = UUID.randomUUID();
             bytes = id.toString().getBytes();
             intBuffer.put(0, bytes.length);
+            System.out.println("***Rank:" + worldProcRank + " " + new String(bytes));
         }
 
         worldProcsComm.bcast(intBuffer, 1, MPI.INT, 0);
