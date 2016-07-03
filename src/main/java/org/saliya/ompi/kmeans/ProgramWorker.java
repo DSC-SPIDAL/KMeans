@@ -57,9 +57,9 @@ public class ProgramWorker {
 
     public void run() throws MPIException, IOException {
 
-        final double[] centerSumsAndCountsForThread = new double[numCenters*(dimension+1)];
+//        final double[] centerSumsAndCountsForThread = new double[numCenters*(dimension+1)];
         final int lengthCenterSumsAndCounts = numCenters*(dimension+1);
-//        final DoubleBuffer centerSumsAndCountsForThread = DoubleBuffer.allocate(lengthCenterSumsAndCounts);
+        final DoubleBuffer centerSumsAndCountsForThread = DoubleBuffer.allocate(lengthCenterSumsAndCounts);
         final int[] clusterAssignments = new int[ParallelOps.pointsForThread[threadIdx]];
 
         int itrCount = 0;
@@ -70,7 +70,7 @@ public class ProgramWorker {
         long[] times = new long[]{0,0,0};
         while (!converged && itrCount < maxIterations) {
             ++itrCount;
-            resetCenterSumsAndCounts(centerSumsAndCountsForThread);
+            resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
 
             timer.start();
             findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
@@ -82,8 +82,8 @@ public class ProgramWorker {
             if (numThreads > 1) {
                 // Sum over threads
                 // Place results to arrays of thread 0
-//                threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
-                threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread);
+                threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
+//                threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread);
             }
 
             timer.start();
@@ -98,8 +98,8 @@ public class ProgramWorker {
 
             if (numThreads > 1){
                 // Note. method call with double buffer
-                threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, 0);
-//                threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts, 0);
+//                threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, 0);
+                threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts, 0);
             }
 
             converged = true;
@@ -107,13 +107,13 @@ public class ProgramWorker {
                 for (int i = 0; i < numCenters; ++i) {
                     final int c = i;
                     // Note. method call with double buffer
-                    IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) + j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
-                    /*IntStream.range(0, dimension).forEach(j -> {
+//                    IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) + j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
+                    IntStream.range(0, dimension).forEach(j -> {
                         int storeIdx = (c * (dimension + 1)) + j;
                         int readIdx = (c * (dimension + 1)) + dimension;
                         double tmp = centerSumsAndCountsForThread.get(storeIdx);
                         centerSumsAndCountsForThread.put(storeIdx, tmp/centerSumsAndCountsForThread.get(readIdx));
-                    });*/
+                    });
                     double dist = getEuclideanDistance(centerSumsAndCountsForThread, centers, dimension,
                             (c * (dimension + 1)), c * dimension);
                     if (dist > errorThreshold) {
@@ -121,10 +121,10 @@ public class ProgramWorker {
                         // form new centers
                         converged = false;
                     }
-                    IntStream.range(0, dimension).forEach(
-                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
                     /*IntStream.range(0, dimension).forEach(
-                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread.get((c * (dimension + 1)) + j));*/
+                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);*/
+                    IntStream.range(0, dimension).forEach(
+                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread.get((c * (dimension + 1)) + j));
                 }
             }
             if (numThreads > 1) {
@@ -277,8 +277,8 @@ public class ProgramWorker {
         IntStream.range(0, centerSumsAndCountsForThread.length).forEach(i -> centerSumsAndCountsForThread[i] = 0.0);
     }
 
-    private static void resetCenterSumsAndCounts(DoubleBuffer centerSumsAndCountsForThread) {
+    private static void resetCenterSumsAndCounts(DoubleBuffer centerSumsAndCountsForThread, int length) {
         centerSumsAndCountsForThread.position(0);
-        IntStream.range(0, centerSumsAndCountsForThread.remaining()).forEach(i -> centerSumsAndCountsForThread.put(i, 0.0));
+        IntStream.range(0, length).forEach(i -> centerSumsAndCountsForThread.put(i, 0.0));
     }
 }
