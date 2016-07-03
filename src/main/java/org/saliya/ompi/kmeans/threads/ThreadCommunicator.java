@@ -18,7 +18,7 @@ public class ThreadCommunicator {
 
     public ThreadCommunicator(int numThreads, int numCenters, int dimensions) {
         this.numThreads = numThreads;
-//        doubleBuffer = new double[numThreads*numCenters*(dimensions+1)];
+        doubleBufferArray = new double[numThreads*numCenters*(dimensions+1)];
         doubleBuffer = DoubleBuffer.allocate(numThreads*numCenters*(dimensions+1));
         intBuffer = new int[ParallelOps.pointsForProc];
     }
