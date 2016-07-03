@@ -85,6 +85,8 @@ public class ProgramWorker {
                 threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
             }
 
+            // TODO - testing with a barrier to see if comm times reduce
+            ParallelOps.worldProcsComm.barrier();
             timer.start();
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
                 // Note. reverting to default MPI call with double buffer
