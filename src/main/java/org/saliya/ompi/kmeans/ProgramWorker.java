@@ -85,17 +85,17 @@ public class ProgramWorker {
                 threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
             }
 
-            // TODO - testing with a barrier to see if comm times reduce
-            ParallelOps.worldProcsComm.barrier();
-            timer.start();
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
+                // TODO - testing with a barrier to see if comm times reduce
+                ParallelOps.worldProcsComm.barrier();
+                timer.start();
                 // Note. reverting to default MPI call with double buffer
 //                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                 ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
+                timer.stop();
+                times[2] += timer.elapsed(TimeUnit.MILLISECONDS);
+                timer.reset();
             }
-            timer.stop();
-            times[2] += timer.elapsed(TimeUnit.MILLISECONDS);
-            timer.reset();
 
             if (numThreads > 1){
                 // Note. method call with double buffer
