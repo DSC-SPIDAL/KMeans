@@ -1,0 +1,8 @@
+lrt_6x4x16_1000000_1000_2_1000	    Done in 1000 iterations and 17056.28125 ms on average (across all MPI)
+lrt_4x6x16_1000000_1000_2_1000	    Done in 1000 iterations and 17630.135416666668 ms on average (across all MPI)
+lrt_1x24x16_1000000_1000_2_1000	    Done in 1000 iterations and 18218.5234375 ms on average (across all MPI)
+lrt_12x2x16_1000000_1000_2_1000	    Done in 1000 iterations and 16931.4375 ms on average (across all MPI)
+lrt_24x1x16_1000000_1000_2_1000	    Done in 998 iterations and 17843.6875 ms on average (across all MPI)
+lrt_3x8x16_1000000_1000_2_1000	    Done in 1000 iterations and 18664.640625 ms on average (across all MPI)
+lrt_8x3x16_1000000_1000_2_1000	    Done in 1000 iterations and 17268.583333333332 ms on average (across all MPI)
+lrt_2x12x16_1000000_1000_2_1000	    Done in 1000 iterations and 17238.677083333332 ms on average (across all MPI)
