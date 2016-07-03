@@ -67,7 +67,7 @@ public class ProgramWorker {
         print("  Computing K-Means .. ");
         Stopwatch loopTimer = threadIdx == 0 ? Stopwatch.createStarted(): null;
         Stopwatch timer = Stopwatch.createUnstarted();
-        long[] times = new long[]{0,0,0};
+        long[] times = new long[]{0,0,0,0};
         while (!converged && itrCount < maxIterations) {
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
@@ -86,8 +86,13 @@ public class ProgramWorker {
             }
 
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
+                timer.start();
                 // TODO - testing with a barrier to see if comm times reduce
                 ParallelOps.worldProcsComm.barrier();
+                timer.stop();
+                times[3] += timer.elapsed(TimeUnit.MILLISECONDS);
+                timer.reset();
+
                 timer.start();
                 // Note. reverting to default MPI call with double buffer
 //                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
@@ -143,7 +148,7 @@ public class ProgramWorker {
         }
 
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-            ParallelOps.worldProcsComm.reduce(times, 3, MPI.LONG, MPI.SUM, 0);
+            ParallelOps.worldProcsComm.reduce(times, 4, MPI.LONG, MPI.SUM, 0);
         }
 
         if (threadIdx == 0){
@@ -156,6 +161,7 @@ public class ProgramWorker {
                     times[0] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
             print("    Compute time (thread 0 avg across MPI) " + times[1] * 1.0 / ParallelOps.worldProcsCount + " ms");
             print("    Comm time (thread 0 avg across MPI) " + times[2] * 1.0 / ParallelOps.worldProcsCount + " ms");
+            print("    Barrier time (thread 0 avg across MPI) " + times[3] * 1.0 / ParallelOps.worldProcsCount + " ms");
         }
 
         if (!Strings.isNullOrEmpty(outputFile)) {
