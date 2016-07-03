@@ -442,6 +442,7 @@ public class ParallelOps {
 //            }
 //        }
 
+        // Note. reverting to default MPI routine
         for (int i = 0; i < length; ++i){
             mmapCollectiveBytes.writeDouble(i*Double.BYTES, values[offset+i]);
         }
