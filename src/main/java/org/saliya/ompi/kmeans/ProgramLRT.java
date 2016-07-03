@@ -106,7 +106,7 @@ public class ProgramLRT {
                 try {
                     final ProgramWorker worker = new ProgramWorker(threadIdx, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
                     worker.run();
-                } catch (MPIException | IOException e) {
+                } catch (Exception e){
                     e.printStackTrace();
                 }
             }));

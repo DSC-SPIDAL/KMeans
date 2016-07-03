@@ -11,14 +11,14 @@ public class ThreadCommunicator {
     private AtomicInteger bcastDoubleCount = new AtomicInteger(0);
     private AtomicInteger bcastBoolCount = new AtomicInteger(0);
     private AtomicInteger collectCount = new AtomicInteger(0);
-//    private double[] doubleBuffer;
+    private double[] doubleBufferArray;
     private DoubleBuffer doubleBuffer;
     private int[] intBuffer;
     private boolean booleanBuffer;
 
     public ThreadCommunicator(int numThreads, int numCenters, int dimensions) {
         this.numThreads = numThreads;
-//        doubleBuffer = new double[numThreads*numCenters*(dimensions+1)];
+        doubleBufferArray = new double[numThreads*numCenters*(dimensions+1)];
         doubleBuffer = DoubleBuffer.allocate(numThreads*numCenters*(dimensions+1));
         intBuffer = new int[ParallelOps.pointsForProc];
     }
@@ -33,14 +33,14 @@ public class ThreadCommunicator {
     * D is dimension of the point
     * N is the count of points assigned to the corresponding center
     */
-    /*public void sumDoubleArrayOverThreads(int threadIdx, double[] vals) {
+    public void sumDoubleArrayOverThreads(int threadIdx, double[] vals) {
         sumCount.compareAndSet(numThreads, 0);
 
-        *//* column values are placed nearby *//*
+        // column values are placed nearby
         int idx;
         for (int i = 0; i < vals.length; ++i){
             idx = (i* numThreads)+threadIdx;
-            doubleBuffer[idx] = vals[i];
+            doubleBufferArray[idx] = vals[i];
         }
         sumCount.getAndIncrement();
         // thread 0 waits for others to update
@@ -52,12 +52,12 @@ public class ThreadCommunicator {
                 double sum = 0.0;
                 int pos = i*numThreads;
                 for (int t = 0; t < numThreads; ++t) {
-                    sum += doubleBuffer[pos+t];
+                    sum += doubleBufferArray[pos+t];
                 }
                 vals[i] = sum;
             }
         }
-    }*/
+    }
 
     public void sumDoubleArrayOverThreads(int threadIdx, DoubleBuffer vals, int length) {
         sumCount.compareAndSet(numThreads, 0);
@@ -85,11 +85,10 @@ public class ThreadCommunicator {
         }
     }
 
-/*
     public void broadcastDoubleArrayOverThreads(int threadIdx, double[] vals, int root) {
         bcastDoubleCount.compareAndSet(numThreads, 0);
         if (threadIdx == root){
-            System.arraycopy(vals, 0, doubleBuffer, 0, vals.length);
+            System.arraycopy(vals, 0, doubleBufferArray, 0, vals.length);
         }
         bcastDoubleCount.getAndIncrement();
 
@@ -97,10 +96,9 @@ public class ThreadCommunicator {
             while (bcastDoubleCount.get() != numThreads) {
                 ;
             }
-            System.arraycopy(doubleBuffer, 0, vals, 0, vals.length);
+            System.arraycopy(doubleBufferArray, 0, vals, 0, vals.length);
         }
     }
-*/
 
     public void broadcastDoubleArrayOverThreads(int threadIdx, DoubleBuffer vals, int length, int root) {
         bcastDoubleCount.compareAndSet(numThreads, 0);
