@@ -94,6 +94,10 @@ public class ProgramWorker {
 
         ArrayList<Double> timings = new ArrayList<>();
         double computeTime;
+
+        // Let's see if a barrier at the beginning will solve the strangler effect
+        ParallelOps.worldProcsComm.barrier();
+
         while (!converged && itrCount < maxIterations) {
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
