@@ -372,6 +372,36 @@ public class ParallelOps {
         return UNSAFE.getLong(buffer, addressOffset);
     }
 
+    public static void barrier() throws MPIException {
+        if (!isHeterogeneous && mmapProcsCount == 1) {
+            worldProcsComm.barrier();
+        } else {
+            mmapLockOne.addAndGetInt(COUNT, 1);
+
+            if (ParallelOps.isMmapLead) {
+                int count = 0;
+                while (count != mmapProcsCount) {
+                    count = mmapLockOne.readInt(COUNT);
+                }
+                // Leaders participate in MPI barrier
+                cgProcComm.barrier();
+                if (mmapProcsCount > 1) {
+                    mmapLockOne.writeInt(COUNT, 1); // order matters as no locks
+                    mmapLockOne.writeBoolean(FLAG, true);
+                } else {
+                /* This is for the case if you only have 1 proc per mmap,
+                * then it needs to clear the flag and reset the count.
+                * We special case when 1 proc per mmap under uniform mode, but
+                * in a heterogeneous setting it's possible to have an mmap with 1 proc, hence this logic*/
+                    mmapLockOne.writeInt(COUNT, 0); // order does NOT matter for this case
+                    mmapLockOne.writeBoolean(FLAG, false);
+                }
+            } else {
+                busyWaitTillDataReady();
+            }
+        }
+    }
+
     public static void allReduceSum(double[] values, int offset, int length) throws MPIException {
         /* special case when #procs per memory map group is 1. Then there's no need to go through the hassle of
         *  making memory maps. Also, this should be done only when running in uniform settings*/
