@@ -86,20 +86,23 @@ public class ProgramWorker {
             }
 
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-                timer.start();
+//                timer.start();
+                double t = MPI.wtime();
                 // TODO - testing with a barrier to see if comm times reduce
                 ParallelOps.worldProcsComm.barrier();
-                timer.stop();
-                times[3] += timer.elapsed(TimeUnit.MILLISECONDS);
-                timer.reset();
-
-                timer.start();
+//                timer.stop();
+//                times[3] += timer.elapsed(TimeUnit.MILLISECONDS);
+//                timer.reset();
+                times[3] += (MPI.wtime() - t)*1000;
+//                timer.start();
+                t = MPI.wtime();
                 // Note. reverting to default MPI call with double buffer
 //                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                 ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
-                timer.stop();
-                times[2] += timer.elapsed(TimeUnit.MILLISECONDS);
-                timer.reset();
+                times[2] += (MPI.wtime() - t)*1000;
+//                timer.stop();
+//                times[2] += timer.elapsed(TimeUnit.MILLISECONDS);
+//                timer.reset();
             }
 
             if (numThreads > 1){
