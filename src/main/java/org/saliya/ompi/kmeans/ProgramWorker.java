@@ -70,6 +70,7 @@ public class ProgramWorker {
         long[] times = new long[]{0,0,0,0};
 
         while (itrCount < maxIterations){
+            ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
                 double t = MPI.wtime();
