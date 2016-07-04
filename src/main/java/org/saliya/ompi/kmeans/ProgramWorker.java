@@ -65,10 +65,12 @@ public class ProgramWorker {
         int itrCount = 0;
         boolean converged = false;
         print("  Computing K-Means .. ");
-        Stopwatch loopTimer = threadIdx == 0 ? Stopwatch.createStarted(): null;
-        Stopwatch timer = Stopwatch.createUnstarted();
-        long[] times = new long[]{0,0,0,0};
+//        Stopwatch loopTimer = threadIdx == 0 ? Stopwatch.createStarted(): null;
+        double loopTimer = threadIdx == 0 ? MPI.wtime(): 0.0;
+//        Stopwatch timer = Stopwatch.createUnstarted();
+        double[] times = new double[]{0.0,0.0,0.0,0.0};
 
+        print("**num bytes: " + lengthCenterSumsAndCounts*Double.BYTES);
         while (itrCount < maxIterations){
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
@@ -154,13 +156,15 @@ public class ProgramWorker {
 //        }
 
         if (threadIdx == 0) {
-            loopTimer.stop();
-            times[0] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
-            loopTimer.reset();
+            times[0] = (MPI.wtime() - loopTimer)*1000;
+//            loopTimer.stop();
+//            times[0] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
+//            loopTimer.reset();
         }
 
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-            ParallelOps.worldProcsComm.reduce(times, 4, MPI.LONG, MPI.SUM, 0);
+//            ParallelOps.worldProcsComm.reduce(times, 4, MPI.LONG, MPI.SUM, 0);
+            ParallelOps.worldProcsComm.reduce(times, 4, MPI.DOUBLE, MPI.SUM, 0);
         }
 
         if (threadIdx == 0){
