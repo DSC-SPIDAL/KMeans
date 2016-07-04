@@ -68,81 +68,89 @@ public class ProgramWorker {
         Stopwatch loopTimer = threadIdx == 0 ? Stopwatch.createStarted(): null;
         Stopwatch timer = Stopwatch.createUnstarted();
         long[] times = new long[]{0,0,0,0};
-        while (!converged && itrCount < maxIterations) {
-            ++itrCount;
+
+        while (itrCount < maxIterations){
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
-
-            timer.start();
-            findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
-                    clusterAssignments, threadIdx);
-            timer.stop();
-            times[1] += timer.elapsed(TimeUnit.MILLISECONDS);
-            timer.reset();
-
-            if (numThreads > 1) {
-                // Sum over threads
-                // Place results to arrays of thread 0
-                threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
-            }
-
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-//                timer.start();
                 double t = MPI.wtime();
                 // TODO - testing with a barrier to see if comm times reduce
                 ParallelOps.worldProcsComm.barrier();
-//                timer.stop();
-//                times[3] += timer.elapsed(TimeUnit.MILLISECONDS);
-//                timer.reset();
                 times[3] += (MPI.wtime() - t)*1000;
-//                timer.start();
                 t = MPI.wtime();
                 // Note. reverting to default MPI call with double buffer
 //                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                 ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
                 times[2] += (MPI.wtime() - t)*1000;
-//                timer.stop();
-//                times[2] += timer.elapsed(TimeUnit.MILLISECONDS);
-//                timer.reset();
-            }
-
-            if (numThreads > 1){
-                // Note. method call with double buffer
-                threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts, 0);
-            }
-
-            converged = true;
-            if (threadIdx == 0) {
-                for (int i = 0; i < numCenters; ++i) {
-                    final int c = i;
-                    // Note. method call with double buffer
-//                    IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) + j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
-
-                    double tmp;
-                    int idx = (c * (dimension + 1));
-                    for (int j = 0; j < dimension; ++j){
-                        tmp = centerSumsAndCountsForThread.get(idx+j);
-                        centerSumsAndCountsForThread.put(
-                                idx+j, tmp / centerSumsAndCountsForThread.get(idx + dimension));
-                    }
-
-                    double dist = getEuclideanDistance(centerSumsAndCountsForThread, centers, dimension,
-                            (c * (dimension + 1)), c * dimension);
-                    if (dist > errorThreshold) {
-                        // Can't break as center sums need to be divided to
-                        // form new centers
-                        converged = false;
-                    }
-                    /*IntStream.range(0, dimension).forEach(
-                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);*/
-                    IntStream.range(0, dimension).forEach(
-                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread.get((c * (dimension + 1)) + j));
-
-                }
-            }
-            if (numThreads > 1) {
-                converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
             }
         }
+
+//        while (!converged && itrCount < maxIterations) {
+//            ++itrCount;
+//            resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
+//
+//            timer.start();
+//            findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
+//                    clusterAssignments, threadIdx);
+//            timer.stop();
+//            times[1] += timer.elapsed(TimeUnit.MILLISECONDS);
+//            timer.reset();
+//
+//            if (numThreads > 1) {
+//                // Sum over threads
+//                // Place results to arrays of thread 0
+//                threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
+//            }
+//
+//            if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
+//                double t = MPI.wtime();
+//                // TODO - testing with a barrier to see if comm times reduce
+//                ParallelOps.worldProcsComm.barrier();
+//                times[3] += (MPI.wtime() - t)*1000;
+//                t = MPI.wtime();
+//                // Note. reverting to default MPI call with double buffer
+////                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
+//                ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
+//                times[2] += (MPI.wtime() - t)*1000;
+//            }
+//
+//            if (numThreads > 1){
+//                // Note. method call with double buffer
+//                threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts, 0);
+//            }
+//
+//            converged = true;
+//            if (threadIdx == 0) {
+//                for (int i = 0; i < numCenters; ++i) {
+//                    final int c = i;
+//                    // Note. method call with double buffer
+////                    IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) + j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
+//
+//                    double tmp;
+//                    int idx = (c * (dimension + 1));
+//                    for (int j = 0; j < dimension; ++j){
+//                        tmp = centerSumsAndCountsForThread.get(idx+j);
+//                        centerSumsAndCountsForThread.put(
+//                                idx+j, tmp / centerSumsAndCountsForThread.get(idx + dimension));
+//                    }
+//
+//                    double dist = getEuclideanDistance(centerSumsAndCountsForThread, centers, dimension,
+//                            (c * (dimension + 1)), c * dimension);
+//                    if (dist > errorThreshold) {
+//                        // Can't break as center sums need to be divided to
+//                        // form new centers
+//                        converged = false;
+//                    }
+//                    /*IntStream.range(0, dimension).forEach(
+//                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);*/
+//                    IntStream.range(0, dimension).forEach(
+//                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread.get((c * (dimension + 1)) + j));
+//
+//                }
+//            }
+//            if (numThreads > 1) {
+//                converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
+//            }
+//        }
 
         if (threadIdx == 0) {
             loopTimer.stop();
