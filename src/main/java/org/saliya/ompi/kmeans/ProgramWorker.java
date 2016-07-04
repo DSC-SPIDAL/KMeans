@@ -7,6 +7,8 @@ import mpi.MPI;
 import mpi.MPIException;
 import org.saliya.ompi.kmeans.threads.ThreadCommunicator;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.DoubleBuffer;
@@ -15,7 +17,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -87,6 +91,8 @@ public class ProgramWorker {
 //            }
 //        }
 
+
+        ArrayList<Double> timings = new ArrayList<>();
         double computeTime;
         while (!converged && itrCount < maxIterations) {
             ++itrCount;
@@ -104,15 +110,24 @@ public class ProgramWorker {
             }
 
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
+                timings.add(new Date().getTime()*1.0);
+                double x = MPI.wtime();
                 double t = MPI.wtime();
                 // TODO - testing with a barrier to see if comm times reduce
                 ParallelOps.worldProcsComm.barrier();
-                times[3] += (MPI.wtime() - t)*1000;
+                double d = (MPI.wtime() - t)*1000;
+                times[3] += d;
+                timings.add(d);
+
                 t = MPI.wtime();
                 // Note. reverting to default MPI call with double buffer
 //                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                 ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
-                times[2] += (MPI.wtime() - t)*1000;
+                d = (MPI.wtime() - t)*1000;
+                times[2] += d;
+                timings.add(d);
+                timings.add((MPI.wtime() - x)*1000);
+                timings.add(new Date().getTime()*1.0);
             }
 
             if (numThreads > 1){
@@ -160,6 +175,30 @@ public class ProgramWorker {
 
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
             ParallelOps.worldProcsComm.reduce(times, 4, MPI.DOUBLE, MPI.SUM, 0);
+
+            int size = timings.size();
+            DoubleBuffer sendBuff = MPI.newDoubleBuffer(size);
+            DoubleBuffer recvBuff = MPI.newDoubleBuffer(size *ParallelOps.worldProcsCount);
+            for (int i = 0; i < size; i++) {
+                sendBuff.put(i,timings.get(i));
+            }
+            ParallelOps.worldProcsComm.allGather(sendBuff, size, MPI.DOUBLE, recvBuff, size, MPI.DOUBLE);
+
+            String name = numThreads + "x" + ParallelOps.worldProcsPerNode  + "x" + ParallelOps.nodeCount + "_timings.txt";
+            try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(name))){
+                PrintWriter pw = new PrintWriter(bw, true);
+                int fields = 5;
+                for (int i = 0; i < itrCount; ++i){
+                    for (int v = 0; v < fields; ++v){
+                        pw.print(i +",");
+                        for (int p = 0; p < ParallelOps.worldProcsCount; ++p){
+                            int offset = p*itrCount*fields+i*fields+v;
+                            pw.print(recvBuff.get(offset) +",");
+                        }
+                        pw.println();
+                    }
+                }
+            }
         }
 
         if (threadIdx == 0){
