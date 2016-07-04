@@ -106,8 +106,7 @@ public class ProgramWorker {
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
                 double t = MPI.wtime();
                 // TODO - testing with a barrier to see if comm times reduce
-//                ParallelOps.worldProcsComm.barrier();
-                ParallelOps.barrier();
+                ParallelOps.worldProcsComm.barrier();
                 times[3] += (MPI.wtime() - t)*1000;
                 t = MPI.wtime();
                 // Note. reverting to default MPI call with double buffer
