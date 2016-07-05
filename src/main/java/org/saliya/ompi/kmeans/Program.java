@@ -79,6 +79,7 @@ public class Program {
         String pointsFile = cmd.hasOption("p") ? cmd.getOptionValue("p") : "";
         int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
         String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
+        // the default is to bind
         boolean bind = !cmd.hasOption("bind") || Boolean.parseBoolean(cmd.getOptionValue("bind"));
 
         try {
@@ -122,6 +123,11 @@ public class Program {
             final double[] centerSumsAndCountsForThread = new double[numThreads*numCenters*(dimension+1)];
             final int[] clusterAssignments = new int[ParallelOps.pointsForProc];
 
+            // Bind all process case here
+            if (numThreads == 1 && bind){
+                BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
+                Affinity.setAffinity(bitSet);
+            }
 
             int itrCount = 0;
             boolean converged = false;
@@ -141,14 +147,11 @@ public class Program {
                             BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
                             Affinity.setAffinity(bitSet);
                         }
+
                         findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                                 clusterAssignments, threadIdx);
                     }));
                 } else {
-                    if (bind) {
-                        BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, 0, numThreads, (ParallelOps.nodeCount));
-                        Affinity.setAffinity(bitSet);
-                    }
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                             clusterAssignments, 0);
                 }
@@ -174,6 +177,7 @@ public class Program {
 //                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, (dimension+1) * numCenters, MPI.DOUBLE, MPI.SUM);
                     // NOTE - change to mmap call
                     ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
+
 //                    commTimer.stop();
 //                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
 //                    commTimerWithCopy.stop();

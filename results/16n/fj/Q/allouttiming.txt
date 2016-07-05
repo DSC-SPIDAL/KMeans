@@ -1,0 +1,8 @@
+fj_3x8x16_1000000_1000_2_1000	    Done in 998 iterations and 36230.609375 ms on average (across all MPI)
+fj_12x2x16_1000000_1000_2_1000	    Done in 998 iterations and 43525.1875 ms on average (across all MPI)
+fj_4x6x16_1000000_1000_2_1000	    Done in 998 iterations and 40544.479166666664 ms on average (across all MPI)
+fj_6x4x16_1000000_1000_2_1000	    Done in 998 iterations and 43414.75 ms on average (across all MPI)
+fj_8x3x16_1000000_1000_2_1000	    Done in 998 iterations and 47025.958333333336 ms on average (across all MPI)
+fj_2x12x16_1000000_1000_2_1000	    Done in 998 iterations and 40499.708333333336 ms on average (across all MPI)
+fj_24x1x16_1000000_1000_2_1000	    Done in 998 iterations and 42753.625 ms on average (across all MPI)
+fj_1x24x16_1000000_1000_2_1000	    Done in 998 iterations and 22105.645833333332 ms on average (across all MPI)
