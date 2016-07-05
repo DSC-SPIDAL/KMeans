@@ -64,15 +64,17 @@ public class DataDuplicator {
             DataInput inStream = isBigEndian ? new DataInputStream(bis) : new LittleEndianDataInputStream(bis);
             DataOutput outStream = isBigEndian ? new DataOutputStream(bos):new LittleEndianDataOutputStream(bos);
 
-            double tmp;
+            double [] tmp = new double[d];
 
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < d; j++)
                 {
-                    tmp = inStream.readDouble();
-                    for (int k = 0; k < x; ++k) {
-                        outStream.writeDouble(tmp);
+                    tmp[j] = inStream.readDouble();
+                }
+                for (int k = 0; k < x; ++k) {
+                    for (int j = 0; j < d; ++d) {
+                        outStream.writeDouble(tmp[j]);
                     }
                 }
             }
