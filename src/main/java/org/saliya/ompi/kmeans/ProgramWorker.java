@@ -99,10 +99,13 @@ public class ProgramWorker {
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
 
+            timings.add(new Date().getTime()*1.0);
             computeTime = MPI.wtime();
             findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
                     clusterAssignments, threadIdx);
-            times[1] += (MPI.wtime() - computeTime)*1000;
+            double t = (MPI.wtime() - computeTime)*1000;
+            times[1] += t;
+            timings.add(t);
 
             if (numThreads > 1) {
                 // Sum over threads
@@ -113,7 +116,7 @@ public class ProgramWorker {
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
                 timings.add(new Date().getTime()*1.0);
                 double x = MPI.wtime();
-                double t = MPI.wtime();
+                t = MPI.wtime();
                 // TODO - testing with a barrier to see if comm times reduce
                 ParallelOps.worldProcsComm.barrier();
                 double d = (MPI.wtime() - t)*1000;
@@ -168,8 +171,6 @@ public class ProgramWorker {
             if (numThreads > 1) {
                 converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
             }
-
-            ParallelOps.worldProcsComm.barrier();
         }
 
         if (threadIdx == 0) {
@@ -190,7 +191,7 @@ public class ProgramWorker {
             String name = numThreads + "x" + ParallelOps.worldProcsPerNode  + "x" + ParallelOps.nodeCount + "_timings.txt";
             try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(name))){
                 PrintWriter pw = new PrintWriter(bw, true);
-                int fields = 5;
+                int fields = 7;
                 for (int i = 0; i < itrCount; ++i){
                     for (int v = 0; v < fields; ++v){
                         pw.print(i +",");
