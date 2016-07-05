@@ -96,6 +96,8 @@ public class ProgramWorker {
         double computeTime;
 
         while (!converged && itrCount < maxIterations) {
+            // adding a barrier to begin with to show the variation with compute timings
+            ParallelOps.worldProcsComm.barrier();
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
 
