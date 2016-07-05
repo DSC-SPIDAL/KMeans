@@ -168,6 +168,8 @@ public class ProgramWorker {
             if (numThreads > 1) {
                 converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
             }
+
+            ParallelOps.worldProcsComm.barrier();
         }
 
         if (threadIdx == 0) {
