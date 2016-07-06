@@ -25,7 +25,7 @@ public class DataConverter {
         programOptions.addOption("d", true, "Dimensionality");
         programOptions.addOption("b", true, "Is big-endian?");
         programOptions.addOption("o", true, "Output directory");
-        programOptions.addOption("t", true, "Type [tb | bb | bt]");
+        programOptions.addOption("t", true, "Type [tb | bb | bt | bti]");
     }
 
     public static void main(String[] args) throws IOException {
@@ -60,15 +60,18 @@ public class DataConverter {
             case "bb":
                 convertBinaryToBinary(file, n, d, isBigEndian, outputDir);
                 break;
+            case "bti":
+                convertBinaryToText(file, n, d, isBigEndian, outputDir, true);
+                break;
             case "bt":
-                convertBinaryToText(file, n, d, isBigEndian, outputDir);
+                convertBinaryToText(file, n, d, isBigEndian, outputDir, false);
                 break;
             default:
                 throw new RuntimeException("Unsupported type " + type + " Has to be either tb or bb or bt");
         }
     }
 
-    private static void convertBinaryToText(String file, int n, int d, boolean isBigEndian, String outputDir) throws IOException {
+    private static void convertBinaryToText(String file, int n, int d, boolean isBigEndian, String outputDir, boolean addIndex) throws IOException {
         String name = com.google.common.io.Files.getNameWithoutExtension(file);
         Path outFile = Paths.get(outputDir, name+".txt");
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.CREATE);
@@ -82,6 +85,9 @@ public class DataConverter {
 
             for (int i = 0; i < n; i++)
             {
+                if (addIndex){
+                    pw.print(i + " ");
+                }
                 for (int j = 0; j < d; j++)
                 {
                     pw.print(inStream.readDouble() + " ");
