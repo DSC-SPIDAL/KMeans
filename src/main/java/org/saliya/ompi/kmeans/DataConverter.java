@@ -68,8 +68,28 @@ public class DataConverter {
         }
     }
 
-    private static void convertBinaryToText(String file, int n, int d, boolean isBigEndian, String outputDir) {
-        throw new RuntimeException("Not implemented yet :)");
+    private static void convertBinaryToText(String file, int n, int d, boolean isBigEndian, String outputDir) throws IOException {
+        String name = com.google.common.io.Files.getNameWithoutExtension(file);
+        Path outFile = Paths.get(outputDir, name+".txt");
+        try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.CREATE);
+             BufferedInputStream bs = new BufferedInputStream(
+                     Files.newInputStream(Paths.get(file), StandardOpenOption.READ))) {
+
+            DataInput inStream = isBigEndian ? new DataInputStream(
+                    bs) : new LittleEndianDataInputStream(bs);
+
+            PrintWriter pw = new PrintWriter(writer, true);
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < d; j++)
+                {
+                    pw.print(inStream.readDouble() + " ");
+                }
+                pw.println();
+            }
+        }
+
     }
 
     private static void convertBinaryToBinary(String file, int n, int d, boolean isBigEndian, String outputDir) throws IOException {
