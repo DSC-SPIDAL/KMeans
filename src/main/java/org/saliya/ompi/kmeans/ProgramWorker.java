@@ -69,28 +69,8 @@ public class ProgramWorker {
         int itrCount = 0;
         boolean converged = false;
         print("  Computing K-Means .. ");
-//        Stopwatch loopTimer = threadIdx == 0 ? Stopwatch.createStarted(): null;
         double loopTimer = threadIdx == 0 ? MPI.wtime(): 0.0;
-//        Stopwatch timer = Stopwatch.createUnstarted();
         double[] times = new double[]{0.0,0.0,0.0,0.0};
-
-//        print("**num bytes: " + lengthCenterSumsAndCounts*Double.BYTES);
-//        while (itrCount < maxIterations){
-//            ++itrCount;
-//            resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
-//            if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-//                double t = MPI.wtime();
-//                // TODO - testing with a barrier to see if comm times reduce
-//                ParallelOps.worldProcsComm.barrier();
-//                times[3] += (MPI.wtime() - t)*1000;
-//                t = MPI.wtime();
-//                // Note. reverting to default MPI call with double buffer
-////                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
-//                ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
-//                times[2] += (MPI.wtime() - t)*1000;
-//            }
-//        }
-
 
         ArrayList<Double> timings = new ArrayList<>();
         double computeTime;
@@ -203,6 +183,18 @@ public class ProgramWorker {
                         }
                         pw.println();
                     }
+                }
+            }
+
+            name = numThreads + "x" + ParallelOps.worldProcsPerNode  + "x" + ParallelOps.nodeCount + "_centers.txt";
+            try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(name))) {
+                PrintWriter pw = new PrintWriter(bw, true);
+                for (int i = 0; i < numCenters; ++i){
+                    pw.print(i + " ");
+                    for (int d = 0; d < dimension+1; ++d){
+                        pw.print(centerSumsAndCountsForThread.get(i*(dimension+1)+d) + " ");
+                    }
+                    pw.println();
                 }
             }
         }
