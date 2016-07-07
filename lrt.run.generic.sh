@@ -4,8 +4,10 @@ cp=$HOME/.m2/repository/com/google/guava/guava/19.0/guava-19.0.jar:$HOME/.m2/rep
 
 wd=$HOME/sali/git/github/esaliya/java/KMeans
 c=$wd/centers.bin
-p=$wd/points.bin
-n=1000000
+#p=$wd/points.bin
+p=$wd/points_X2.bin
+#n=1000000
+n=2000000
 d=2
 k=1000
 m=1000

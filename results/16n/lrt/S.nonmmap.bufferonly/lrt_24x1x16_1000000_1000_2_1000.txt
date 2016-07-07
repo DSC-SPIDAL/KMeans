@@ -1,0 +1,30 @@
+[j-096:109328] MCW rank 15 is not bound (or bound to all available processors)
+[j-079:180022] MCW rank 3 is not bound (or bound to all available processors)
+[j-029:223355] MCW rank 0 is not bound (or bound to all available processors)
+[j-038:209381] MCW rank 1 is not bound (or bound to all available processors)
+[j-083:195568] MCW rank 7 is not bound (or bound to all available processors)
+[j-085:212216] MCW rank 9 is not bound (or bound to all available processors)
+[j-084:70538] MCW rank 8 is not bound (or bound to all available processors)
+[j-081:16514] MCW rank 5 is not bound (or bound to all available processors)
+[j-080:11492] MCW rank 4 is not bound (or bound to all available processors)
+[j-087:110377] MCW rank 11 is not bound (or bound to all available processors)
+[j-078:161262] MCW rank 2 is not bound (or bound to all available processors)
+[j-092:74819] MCW rank 12 is not bound (or bound to all available processors)
+[j-086:76104] MCW rank 10 is not bound (or bound to all available processors)
+[j-082:184938] MCW rank 6 is not bound (or bound to all available processors)
+[j-093:62590] MCW rank 13 is not bound (or bound to all available processors)
+[j-094:41640] MCW rank 14 is not bound (or bound to all available processors)
+=== Program Started on 07/03/2016 14:51:56 ===
+  Reading points ... 
+    Done in 12 ms
+  Reading centers ...
+    Done in 0 ms
+  Computing K-Means .. 
+    Done in 998 iterations and 17789.625 ms on average (across all MPI)
+    Compute time (thread 0 avg across MPI) 14208.5 ms
+    Comm time (thread 0 avg across MPI) 2051.125 ms
+  Gathering cluster assignments ...
+    Done
+  Writing output file ...
+    Done
+=== Program terminated successfully on 07/03/2016 14:52:16 took 19767 ms ===
