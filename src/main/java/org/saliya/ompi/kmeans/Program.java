@@ -143,6 +143,7 @@ public class Program {
                 final int finalItrCount = itrCount;
                 if (numThreads > 1) {
                     launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
+                        Thread.currentThread().setName("HJ"+threadIdx);
                         if (bind) {
                             BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
                             Affinity.setAffinity(bitSet);
