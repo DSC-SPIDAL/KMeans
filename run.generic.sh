@@ -5,7 +5,9 @@ cp=$HOME/.m2/repository/com/google/guava/guava/19.0/guava-19.0.jar:$HOME/.m2/rep
 wd=$HOME/sali/git/github/esaliya/java/KMeans
 c=$wd/centers.bin
 p=$wd/points.bin
+#p=$wd/points_X2.bin
 n=1000000
+#n=2000000
 d=2
 k=1000
 m=1000
@@ -43,6 +45,8 @@ elif [ $procbind = "socket" ]; then
    mpirun --report-bindings --map-by ppr:$ppn:node --bind-to socket -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.Program -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee fj_"$pat"_"$n"_"$k"_"$d"_"$m".txt
 else
     # with IB but bound to none
-    mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.Program -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee fj_"$pat"_"$n"_"$k"_"$d"_"$m".txt
+    #with pontus pvtm
+    #mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) ./run.internal.sh "$opts" "$cp" $n $d $k $t $c $p $m $b $T $explicitbind $pat
+   mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.Program -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee fj_"$pat"_"$n"_"$k"_"$d"_"$m".txt
 fi
 
