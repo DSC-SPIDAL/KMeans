@@ -99,6 +99,7 @@ public class ProgramLRT {
         ThreadCommunicator tcomm = new ThreadCommunicator(numThreads, numCenters, dimension);
         if (ParallelOps.numThreads > 1) {
             launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
+                Thread.currentThread().setName("HJ" + threadIdx);
                 if (bind) {
                     BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
                     Affinity.setAffinity(bitSet);
