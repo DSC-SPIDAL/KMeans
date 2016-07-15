@@ -8,10 +8,10 @@ nodes=16
 name="$nodes"n
 nodefile=nodes.$name.txt
 
-:<<COMMENT
 ./run.generic.sh 1 24 $nodefile $nodes 1 g $explicitbind $procbind
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin"
 list.cmd.sh $nodefile "rm -rf /dev/shm/*.bin"
+:<<COMMENT
 ./run.generic.sh 2 12 $nodefile $nodes 2 g $explicitbind $procbind
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin"
 list.cmd.sh $nodefile "rm -rf /dev/shm/*.bin"
@@ -30,7 +30,7 @@ list.cmd.sh $nodefile "rm -rf /dev/shm/*.bin"
 ./run.generic.sh 12 2 $nodefile $nodes 12 g $explicitbind $procbind
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin"
 list.cmd.sh $nodefile "rm -rf /dev/shm/*.bin"
-COMMENT
 ./run.generic.sh 24 1 $nodefile $nodes 24 g $explicitbind $procbind
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin"
 list.cmd.sh $nodefile "rm -rf /dev/shm/*.bin"
+COMMENT
