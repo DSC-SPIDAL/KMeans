@@ -29,7 +29,8 @@ pe=$(($cpn/$ppn))
 
 pat="$tpp"x"$ppn"x"$nodes"
 
-opts="-XX:+UseG1GC -Xms256m -Xmx"$5""$6""
+#opts="-XX:+UseG1GC -Xms256m -Xmx"$5""$6""
+opts="-XX:+UseSerialGC -Xms256m -Xmx"$5""$6""
 
 explicitbind=$7
 procbind=$8
@@ -46,7 +47,7 @@ elif [ $procbind = "socket" ]; then
 else
     # with IB but bound to none
     #with pontus pvtm
-    #mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) ./run.internal.sh "$opts" "$cp" $n $d $k $t $c $p $m $b $T $explicitbind $pat
-   mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.Program -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee fj_"$pat"_"$n"_"$k"_"$d"_"$m".txt
+    mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) ./run.internal.sh "$opts" "$cp" $n $d $k $t $c $p $m $b $T $explicitbind $pat
+   #mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.Program -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee fj_"$pat"_"$n"_"$k"_"$d"_"$m".txt
 fi
 
