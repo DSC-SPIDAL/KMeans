@@ -29,7 +29,8 @@ pe=$(($cpn/$ppn))
 
 pat="$tpp"x"$ppn"x"$nodes"
 
-opts="-XX:+UseG1GC -Xms256m -Xmx"$5""$6""
+#opts="-XX:+UseG1GC -Xms256m -Xmx"$5""$6""
+opts="-XX:+UseSerialGC -Xms256m -Xmx"$5""$6""
 
 explicitbind=$7
 procbind=$8
