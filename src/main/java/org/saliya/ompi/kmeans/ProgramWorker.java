@@ -72,7 +72,7 @@ public class ProgramWorker {
         double loopTimer = threadIdx == 0 ? MPI.wtime(): 0.0;
         double[] times = new double[]{0.0,0.0,0.0,0.0};
 
-        ArrayList<Double> timings = new ArrayList<>();
+//        ArrayList<Double> timings = new ArrayList<>();
         double computeTime;
 
         while (!converged && itrCount < maxIterations) {
@@ -82,13 +82,13 @@ public class ProgramWorker {
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
 
-            timings.add(new Date().getTime()*1.0);
+//            timings.add(new Date().getTime()*1.0);
             computeTime = MPI.wtime();
             findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
                     clusterAssignments, threadIdx);
             double t = (MPI.wtime() - computeTime)*1000;
             times[1] += t;
-            timings.add(t);
+//            timings.add(t);
 
             if (numThreads > 1) {
                 // Sum over threads
@@ -97,14 +97,14 @@ public class ProgramWorker {
             }
 
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-                timings.add(new Date().getTime()*1.0);
+//                timings.add(new Date().getTime()*1.0);
                 double x = MPI.wtime();
                 t = MPI.wtime();
                 // Note. testing with a barrier to see if comm times reduce
 //                ParallelOps.worldProcsComm.barrier();
                 double d = (MPI.wtime() - t)*1000;
                 times[3] += d;
-                timings.add(d);
+//                timings.add(d);
 
                 t = MPI.wtime();
                 // Note. reverting to default MPI call with double buffer
@@ -112,9 +112,9 @@ public class ProgramWorker {
                 ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
                 d = (MPI.wtime() - t)*1000;
                 times[2] += d;
-                timings.add(d);
-                timings.add((MPI.wtime() - x)*1000);
-                timings.add(new Date().getTime()*1.0);
+//                timings.add(d);
+//                timings.add((MPI.wtime() - x)*1000);
+//                timings.add(new Date().getTime()*1.0);
             }
 
             if (numThreads > 1){
@@ -165,13 +165,13 @@ public class ProgramWorker {
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
             ParallelOps.worldProcsComm.reduce(times, 4, MPI.DOUBLE, MPI.SUM, 0);
 
-            int size = timings.size();
-            DoubleBuffer sendBuff = MPI.newDoubleBuffer(size);
-            DoubleBuffer recvBuff = MPI.newDoubleBuffer(size *ParallelOps.worldProcsCount);
-            for (int i = 0; i < size; i++) {
-                sendBuff.put(i,timings.get(i));
-            }
-            ParallelOps.worldProcsComm.allGather(sendBuff, size, MPI.DOUBLE, recvBuff, size, MPI.DOUBLE);
+//            int size = timings.size();
+//            DoubleBuffer sendBuff = MPI.newDoubleBuffer(size);
+//            DoubleBuffer recvBuff = MPI.newDoubleBuffer(size *ParallelOps.worldProcsCount);
+//            for (int i = 0; i < size; i++) {
+//                sendBuff.put(i,timings.get(i));
+//            }
+//            ParallelOps.worldProcsComm.allGather(sendBuff, size, MPI.DOUBLE, recvBuff, size, MPI.DOUBLE);
 
             // Note. write full timing info and centers. Remember to turn ON barriers for full timing
 //            if (ParallelOps.worldProcRank == 0) {
