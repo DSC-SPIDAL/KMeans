@@ -76,8 +76,9 @@ public class ProgramWorker {
         double computeTime;
 
         while (!converged && itrCount < maxIterations) {
-            // adding a barrier to begin with to show the variation with compute timings
-            ParallelOps.worldProcsComm.barrier();
+            // Note. adding a barrier to begin with to show the variation with compute timings
+            // ParallelOps.worldProcsComm.barrier();
+
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
 
@@ -99,8 +100,8 @@ public class ProgramWorker {
                 timings.add(new Date().getTime()*1.0);
                 double x = MPI.wtime();
                 t = MPI.wtime();
-                // TODO - testing with a barrier to see if comm times reduce
-                ParallelOps.worldProcsComm.barrier();
+                // Note. testing with a barrier to see if comm times reduce
+//                ParallelOps.worldProcsComm.barrier();
                 double d = (MPI.wtime() - t)*1000;
                 times[3] += d;
                 timings.add(d);
@@ -125,7 +126,7 @@ public class ProgramWorker {
             if (threadIdx == 0) {
                 for (int i = 0; i < numCenters; ++i) {
                     final int c = i;
-                    // Note. method call with double buffer
+                    // Note. method call with double arrays instead of buffers
 //                    IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) + j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
 
                     double tmp;
@@ -143,6 +144,8 @@ public class ProgramWorker {
                         // form new centers
                         converged = false;
                     }
+
+                    // Note. method call with double arrays instead of buffers
                     /*IntStream.range(0, dimension).forEach(
                             j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);*/
                     IntStream.range(0, dimension).forEach(
@@ -170,33 +173,37 @@ public class ProgramWorker {
             }
             ParallelOps.worldProcsComm.allGather(sendBuff, size, MPI.DOUBLE, recvBuff, size, MPI.DOUBLE);
 
-            String name = numThreads + "x" + ParallelOps.worldProcsPerNode  + "x" + ParallelOps.nodeCount + "_timings.txt";
-            try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(name))){
-                PrintWriter pw = new PrintWriter(bw, true);
-                int fields = 7;
-                for (int i = 0; i < itrCount; ++i){
-                    for (int v = 0; v < fields; ++v){
-                        pw.print(i +",");
-                        for (int p = 0; p < ParallelOps.worldProcsCount; ++p){
-                            int offset = p*itrCount*fields+i*fields+v;
-                            pw.print(recvBuff.get(offset) +",");
-                        }
-                        pw.println();
-                    }
-                }
-            }
-
-            name = numThreads + "x" + ParallelOps.worldProcsPerNode  + "x" + ParallelOps.nodeCount + "_centers.txt";
-            try(BufferedWriter bw = Files.newBufferedWriter(Paths.get(name))) {
-                PrintWriter pw = new PrintWriter(bw, true);
-                for (int i = 0; i < numCenters; ++i){
-                    pw.print(i + " ");
-                    for (int d = 0; d < dimension+1; ++d){
-                        pw.print(centerSumsAndCountsForThread.get(i*(dimension+1)+d) + " ");
-                    }
-                    pw.println();
-                }
-            }
+            // Note. write full timing info and centers. Remember to turn ON barriers for full timing
+//            if (ParallelOps.worldProcRank == 0) {
+//                String name =
+//                        numThreads + "x" + ParallelOps.worldProcsPerNode + "x" + ParallelOps.nodeCount + "_timings.txt";
+//                try (BufferedWriter bw = Files.newBufferedWriter(Paths.get(name))) {
+//                    PrintWriter pw = new PrintWriter(bw, true);
+//                    int fields = 7;
+//                    for (int i = 0; i < itrCount; ++i) {
+//                        for (int v = 0; v < fields; ++v) {
+//                            pw.print(i + ",");
+//                            for (int p = 0; p < ParallelOps.worldProcsCount; ++p) {
+//                                int offset = p * itrCount * fields + i * fields + v;
+//                                pw.print(recvBuff.get(offset) + ",");
+//                            }
+//                            pw.println();
+//                        }
+//                    }
+//                }
+//
+//                name = numThreads + "x" + ParallelOps.worldProcsPerNode + "x" + ParallelOps.nodeCount + "_centers.txt";
+//                try (BufferedWriter bw = Files.newBufferedWriter(Paths.get(name))) {
+//                    PrintWriter pw = new PrintWriter(bw, true);
+//                    for (int i = 0; i < numCenters; ++i) {
+//                        pw.print(i + " ");
+//                        for (int d = 0; d < dimension + 1; ++d) {
+//                            pw.print(centerSumsAndCountsForThread.get(i * (dimension + 1) + d) + " ");
+//                        }
+//                        pw.println();
+//                    }
+//                }
+//            }
         }
 
         if (threadIdx == 0){
