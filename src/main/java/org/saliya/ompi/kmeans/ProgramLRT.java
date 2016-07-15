@@ -99,12 +99,13 @@ public class ProgramLRT {
         ThreadCommunicator tcomm = new ThreadCommunicator(numThreads, numCenters, dimension);
         if (ParallelOps.numThreads > 1) {
             launchHabaneroApp(() -> forallChunked(0, numThreads - 1, (threadIdx) -> {
-                Thread.currentThread().setName("HJ" + threadIdx);
+
                 if (bind) {
                     BitSet bitSet = ThreadBitAssigner.getBitSet(ParallelOps.worldProcRank, threadIdx, numThreads, (ParallelOps.nodeCount));
                     Affinity.setAffinity(bitSet);
                 }
                 try {
+                    Thread.currentThread().setName("HJ" + threadIdx);
                     final ProgramWorker worker = new ProgramWorker(threadIdx, tcomm, numPoints, dimension, numCenters, maxIterations, errorThreshold, numThreads, points, centers, outputFile, pointsFile, isBigEndian);
                     worker.run();
                 } catch (Exception e){
