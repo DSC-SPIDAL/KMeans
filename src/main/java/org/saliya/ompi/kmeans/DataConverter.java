@@ -122,7 +122,7 @@ public class DataConverter {
         String file, int d, boolean isBigEndian, String outputDir)
         throws IOException {
         String name = com.google.common.io.Files.getNameWithoutExtension(file);
-        Path outFile = Paths.get(outputDir, name+".bin");
+        Path outFile = Paths.get(outputDir, name+(isBigEndian ? "_BE": "_LE")+".bin");
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(file));
             BufferedOutputStream bs = new BufferedOutputStream(
                 Files.newOutputStream(outFile, StandardOpenOption.CREATE))) {
