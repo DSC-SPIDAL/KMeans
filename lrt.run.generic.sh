@@ -38,17 +38,17 @@ procbind=$8
 
 reportmpibindings=--report-bindings
 #reportmpibindings=
-
+btl="--mca btl ^openib"
 if [ $procbind = "core" ]; then
     # with IB and bound to corresponding PEs
-    mpirun --report-bindings --map-by ppr:$ppn:node:PE=$pe --bind-to core -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
+    mpirun $btl --report-bindings --map-by ppr:$ppn:node:PE=$pe --bind-to core -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
 elif [ $procbind = "socket" ]; then
    # with IB and bound to socket
-   mpirun --report-bindings --map-by ppr:$ppn:node --bind-to socket -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
+   mpirun $btl --report-bindings --map-by ppr:$ppn:node --bind-to socket -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
 else
     # with IB but bound to none
     #with pontus pvtm
-    #mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) ./lrt.run.internal.sh "$opts" "$cp" $n $d $k $t $c $p $m $b $T $explicitbind $pat
-    mpirun --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
+    #mpirun $btl --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) ./lrt.run.internal.sh "$opts" "$cp" $n $d $k $t $c $p $m $b $T $explicitbind $pat
+    mpirun $btl --report-bindings --map-by ppr:$ppn:node --bind-to none -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
 fi
 
