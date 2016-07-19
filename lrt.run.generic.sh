@@ -21,7 +21,7 @@ COMMENT
 
 wd=/N/u/sekanaya/sali/projects/flink/kmeans/data2
 points=1000000
-centers=500000
+centers=1000
 
 exp="$points"_"$centers"
 p=$wd/$exp/points_BE.bin
