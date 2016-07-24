@@ -9,6 +9,7 @@ import org.saliya.ompi.kmeans.threads.ThreadCommunicator;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -57,42 +58,62 @@ public class ProgramWorker {
     public void run() throws MPIException, IOException {
 
         final double[] centerSumsAndCountsForThread = new double[numCenters*(dimension+1)];
+        final int lengthCenterSumsAndCounts = numCenters*(dimension+1);
+//        final DoubleBuffer centerSumsAndCountsForThread = DoubleBuffer.allocate(lengthCenterSumsAndCounts);
         final int[] clusterAssignments = new int[ParallelOps.pointsForThread[threadIdx]];
 
         int itrCount = 0;
         boolean converged = false;
         print("  Computing K-Means .. ");
         Stopwatch loopTimer = threadIdx == 0 ? Stopwatch.createStarted(): null;
-        long[] times = new long[]{0};
+        Stopwatch timer = Stopwatch.createUnstarted();
+        long[] times = new long[]{0,0,0};
         while (!converged && itrCount < maxIterations) {
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
+            timer.start();
             findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
                     clusterAssignments, threadIdx);
+            timer.stop();
+            times[1] += timer.elapsed(TimeUnit.MILLISECONDS);
+            timer.reset();
 
             if (numThreads > 1) {
                 // Sum over threads
                 // Place results to arrays of thread 0
+//                threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
                 threadComm.sumDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread);
-//                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread sum");
             }
 
+            timer.start();
             if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
-//                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after MPI allreduce");
+                // Note. reverting to default MPI call with double buffer
+//                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
+                ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
             }
+            timer.stop();
+            times[2] += timer.elapsed(TimeUnit.MILLISECONDS);
+            timer.reset();
 
             if (numThreads > 1){
+                // Note. method call with double buffer
                 threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, 0);
-//                System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after thread bcast");
+//                threadComm.broadcastDoubleArrayOverThreads(threadIdx, centerSumsAndCountsForThread, lengthCenterSumsAndCounts, 0);
             }
 
             converged = true;
             if (threadIdx == 0) {
                 for (int i = 0; i < numCenters; ++i) {
                     final int c = i;
+                    // Note. method call with double buffer
                     IntStream.range(0, dimension).forEach(j -> centerSumsAndCountsForThread[(c * (dimension + 1)) + j] /= centerSumsAndCountsForThread[(c * (dimension + 1)) + dimension]);
+                    /*IntStream.range(0, dimension).forEach(j -> {
+                        int storeIdx = (c * (dimension + 1)) + j;
+                        int readIdx = (c * (dimension + 1)) + dimension;
+                        double tmp = centerSumsAndCountsForThread.get(storeIdx);
+                        centerSumsAndCountsForThread.put(storeIdx, tmp/centerSumsAndCountsForThread.get(readIdx));
+                    });*/
                     double dist = getEuclideanDistance(centerSumsAndCountsForThread, centers, dimension,
                             (c * (dimension + 1)), c * dimension);
                     if (dist > errorThreshold) {
@@ -102,15 +123,14 @@ public class ProgramWorker {
                     }
                     IntStream.range(0, dimension).forEach(
                             j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread[(c * (dimension + 1)) + j]);
+                    /*IntStream.range(0, dimension).forEach(
+                            j -> centers[(c * dimension) + j] = centerSumsAndCountsForThread.get((c * (dimension + 1)) + j));*/
                 }
-//                System.out.println("--Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came before end of loop");
             }
             if (numThreads > 1) {
                 converged = threadComm.bcastBooleanOverThreads(threadIdx, converged, 0);
             }
         }
-
-//        System.out.println("**Rank: " + ParallelOps.worldProcRank + " Thread: " + threadIdx + " came after loop");
 
         if (threadIdx == 0) {
             loopTimer.stop();
@@ -119,7 +139,7 @@ public class ProgramWorker {
         }
 
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
-            ParallelOps.worldProcsComm.reduce(times, 1, MPI.LONG, MPI.SUM, 0);
+            ParallelOps.worldProcsComm.reduce(times, 3, MPI.LONG, MPI.SUM, 0);
         }
 
         if (threadIdx == 0){
@@ -130,6 +150,8 @@ public class ProgramWorker {
             }
             print("    Done in " + itrCount + " iterations and " +
                     times[0] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
+            print("    Compute time (thread 0 avg across MPI) " + times[1] * 1.0 / ParallelOps.worldProcsCount + " ms");
+            print("    Comm time (thread 0 avg across MPI) " + times[2] * 1.0 / ParallelOps.worldProcsCount + " ms");
         }
 
         if (!Strings.isNullOrEmpty(outputFile)) {
@@ -192,6 +214,22 @@ public class ProgramWorker {
         }
     }
 
+    private static void findNearesetCenters(int dimension, int numCenters, double[] pointsForProc, double[] centers, DoubleBuffer centerSumsAndCountsForThread, int[] clusterAssignments, Integer threadIdx) {
+        int pointsForThread = ParallelOps.pointsForThread[threadIdx];
+        int pointStartIdxForThread = ParallelOps.pointStartIdxForThread[threadIdx];
+
+        for (int i = 0; i < pointsForThread; ++i) {
+            int pointOffset = (pointStartIdxForThread + i) * dimension;
+            int centerWithMinDist = findCenterWithMinDistance(pointsForProc, centers, dimension,
+                    numCenters, pointOffset);
+
+            int centerOffset = centerWithMinDist*(dimension+1);
+            centerSumsAndCountsForThread.put(centerOffset+dimension, centerSumsAndCountsForThread.get(centerOffset+dimension) +1);
+            accumulate(pointsForProc, centerSumsAndCountsForThread, pointOffset, centerOffset, dimension);
+            clusterAssignments[i] = centerWithMinDist;
+        }
+    }
+
     private static int findCenterWithMinDistance(double[] points, double[] centers, int dimension, int numCenters, int pointOffset) {
         double dMin = Double.MAX_VALUE;
         int dMinIdx = -1;
@@ -211,6 +249,14 @@ public class ProgramWorker {
         }
     }
 
+    private static void accumulate(double[] points, DoubleBuffer centerSumsAndCounts, int pointOffset, int centerOffset, int dimension) {
+        double tmp;
+        for (int i = 0; i < dimension; ++i) {
+            tmp = centerSumsAndCounts.get(centerOffset+1);
+            centerSumsAndCounts.put(centerOffset+i, points[pointOffset+i]+tmp);
+        }
+    }
+
     private static double getEuclideanDistance(double[] point1, double[] point2, int dimension, int point1Offset, int point2Offset) {
         double d = 0.0;
         for (int i = 0; i < dimension; ++i) {
@@ -219,7 +265,20 @@ public class ProgramWorker {
         return Math.sqrt(d);
     }
 
+    private static double getEuclideanDistance(DoubleBuffer point1, double[] point2, int dimension, int point1Offset, int point2Offset) {
+        double d = 0.0;
+        for (int i = 0; i < dimension; ++i) {
+            d += Math.pow(point1.get(i+point1Offset) - point2[i+point2Offset], 2);
+        }
+        return Math.sqrt(d);
+    }
+
     private static void resetCenterSumsAndCounts(double[] centerSumsAndCountsForThread) {
         IntStream.range(0, centerSumsAndCountsForThread.length).forEach(i -> centerSumsAndCountsForThread[i] = 0.0);
+    }
+
+    private static void resetCenterSumsAndCounts(DoubleBuffer centerSumsAndCountsForThread) {
+        centerSumsAndCountsForThread.position(0);
+        IntStream.range(0, centerSumsAndCountsForThread.remaining()).forEach(i -> centerSumsAndCountsForThread.put(i, 0.0));
     }
 }
