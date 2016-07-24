@@ -1,0 +1,64 @@
+[j-070:11878] MCW rank 10 is not bound (or bound to all available processors)
+[j-070:11878] MCW rank 11 is not bound (or bound to all available processors)
+[j-070:11878] MCW rank 9 is not bound (or bound to all available processors)
+[j-084:198525] MCW rank 45 is not bound (or bound to all available processors)
+[j-068:14995] MCW rank 3 is not bound (or bound to all available processors)
+[j-084:198525] MCW rank 46 is not bound (or bound to all available processors)
+[j-068:14995] MCW rank 4 is not bound (or bound to all available processors)
+[j-084:198525] MCW rank 47 is not bound (or bound to all available processors)
+[j-068:14995] MCW rank 5 is not bound (or bound to all available processors)
+[j-074:15575] MCW rank 21 is not bound (or bound to all available processors)
+[j-074:15575] MCW rank 22 is not bound (or bound to all available processors)
+[j-074:15575] MCW rank 23 is not bound (or bound to all available processors)
+[j-067:16645] MCW rank 1 is not bound (or bound to all available processors)
+[j-067:16645] MCW rank 2 is not bound (or bound to all available processors)
+[j-067:16645] MCW rank 0 is not bound (or bound to all available processors)
+[j-079:147285] MCW rank 33 is not bound (or bound to all available processors)
+[j-079:147285] MCW rank 34 is not bound (or bound to all available processors)
+[j-079:147285] MCW rank 35 is not bound (or bound to all available processors)
+[j-075:109579] MCW rank 24 is not bound (or bound to all available processors)
+[j-075:109579] MCW rank 25 is not bound (or bound to all available processors)
+[j-075:109579] MCW rank 26 is not bound (or bound to all available processors)
+[j-072:40568] MCW rank 15 is not bound (or bound to all available processors)
+[j-072:40568] MCW rank 16 is not bound (or bound to all available processors)
+[j-072:40568] MCW rank 17 is not bound (or bound to all available processors)
+[j-076:14074] MCW rank 27 is not bound (or bound to all available processors)
+[j-076:14074] MCW rank 28 is not bound (or bound to all available processors)
+[j-069:198838] MCW rank 7 is not bound (or bound to all available processors)
+[j-076:14074] MCW rank 29 is not bound (or bound to all available processors)
+[j-069:198838] MCW rank 8 is not bound (or bound to all available processors)
+[j-069:198838] MCW rank 6 is not bound (or bound to all available processors)
+[j-071:16038] MCW rank 12 is not bound (or bound to all available processors)
+[j-071:16038] MCW rank 13 is not bound (or bound to all available processors)
+[j-071:16038] MCW rank 14 is not bound (or bound to all available processors)
+[j-081:207299] MCW rank 39 is not bound (or bound to all available processors)
+[j-081:207299] MCW rank 40 is not bound (or bound to all available processors)
+[j-078:239586] MCW rank 30 is not bound (or bound to all available processors)
+[j-078:239586] MCW rank 31 is not bound (or bound to all available processors)
+[j-081:207299] MCW rank 41 is not bound (or bound to all available processors)
+[j-078:239586] MCW rank 32 is not bound (or bound to all available processors)
+[j-080:140072] MCW rank 36 is not bound (or bound to all available processors)
+[j-080:140072] MCW rank 37 is not bound (or bound to all available processors)
+[j-080:140072] MCW rank 38 is not bound (or bound to all available processors)
+[j-073:17554] MCW rank 18 is not bound (or bound to all available processors)
+[j-073:17554] MCW rank 19 is not bound (or bound to all available processors)
+[j-073:17554] MCW rank 20 is not bound (or bound to all available processors)
+[j-083:207219] MCW rank 42 is not bound (or bound to all available processors)
+[j-083:207219] MCW rank 43 is not bound (or bound to all available processors)
+[j-083:207219] MCW rank 44 is not bound (or bound to all available processors)
+=== Program Started on 07/18/2016 01:43:00 ===
+  Reading points ... 
+    Done in 7 ms
+  Reading centers ...
+    Done in 0 ms
+  Computing K-Means .. 
+    Stopping K-Means as max iteration count 100 has reached
+    Done in 100 iterations and 2109.457090497017 ms on average (across all MPI)
+    Compute time (thread 0 avg across MPI) 1526.4903704325359 ms
+    Comm time (thread 0 avg across MPI) 449.1069167852402 ms
+    Barrier time (thread 0 avg across MPI) 0.01179178555806478 ms
+  Gathering cluster assignments ...
+    Done
+  Writing output file ...
+    Done
+=== Program terminated successfully on 07/18/2016 01:43:04 took 4245 ms ===

@@ -1,0 +1,8 @@
+lrt_12x2x16_1000000_100000_2_100	    Done in 100 iterations and 157168.9579114318 ms on average (across all MPI)
+lrt_24x1x16_1000000_100000_2_100	    Done in 100 iterations and 159643.21430027485 ms on average (across all MPI)
+lrt_12x2x16_1000000_100000_2_100	    Done in 100 iterations and 157168.9579114318 ms on average (across all MPI)
+lrt_24x1x16_1000000_100000_2_100	    Done in 100 iterations and 159643.21430027485 ms on average (across all MPI)
+lrt_12x2x16_1000000_100000_2_100	    Compute time (thread 0 avg across MPI) 141190.91165810823 ms
+lrt_24x1x16_1000000_100000_2_100	    Compute time (thread 0 avg across MPI) 141789.2681211233 ms
+lrt_12x2x16_1000000_100000_2_100	    Comm time (thread 0 avg across MPI) 12747.96061962843 ms
+lrt_24x1x16_1000000_100000_2_100	    Comm time (thread 0 avg across MPI) 12013.592302799225 ms

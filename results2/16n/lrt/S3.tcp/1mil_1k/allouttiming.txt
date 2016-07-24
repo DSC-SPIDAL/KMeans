@@ -1,0 +1,24 @@
+lrt_12x2x16_1000000_1000_2_100	    Done in 100 iterations and 2012.0093002915382 ms on average (across all MPI)
+lrt_8x3x16_1000000_1000_2_100	    Done in 100 iterations and 2109.457090497017 ms on average (across all MPI)
+lrt_6x4x16_1000000_1000_2_100	    Done in 100 iterations and 2016.8060213327408 ms on average (across all MPI)
+lrt_24x1x16_1000000_1000_2_100	    Done in 100 iterations and 2365.301162004471 ms on average (across all MPI)
+lrt_3x8x16_1000000_1000_2_100	    Done in 100 iterations and 2167.1769376844168 ms on average (across all MPI)
+lrt_4x6x16_1000000_1000_2_100	    Done in 100 iterations and 2247.584948937098 ms on average (across all MPI)
+lrt_1x24x16_1000000_1000_2_100	    Done in 100 iterations and 2834.360394626856 ms on average (across all MPI)
+lrt_2x12x16_1000000_1000_2_100	    Done in 100 iterations and 2703.393466770649 ms on average (across all MPI)
+lrt_12x2x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1522.4381759762764 ms
+lrt_8x3x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1526.4903704325359 ms
+lrt_6x4x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1503.8976930081844 ms
+lrt_24x1x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1631.633847951889 ms
+lrt_3x8x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1516.210749745369 ms
+lrt_4x6x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1509.1172481576602 ms
+lrt_1x24x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1541.2516836076975 ms
+lrt_2x12x16_1000000_1000_2_100	    Compute time (thread 0 avg across MPI) 1538.6499253412087 ms
+lrt_12x2x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 351.1807397007942 ms
+lrt_8x3x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 449.1069167852402 ms
+lrt_6x4x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 409.0469814836979 ms
+lrt_24x1x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 426.1976629495621 ms
+lrt_3x8x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 565.9583322703838 ms
+lrt_4x6x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 644.9722821513811 ms
+lrt_1x24x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 1255.7217062761385 ms
+lrt_2x12x16_1000000_1000_2_100	    Comm time (thread 0 avg across MPI) 1096.7011662820976 ms
