@@ -1,0 +1,32 @@
+[j-084:02706] MCW rank 15 is not bound (or bound to all available processors)
+[j-070:94945] MCW rank 3 is not bound (or bound to all available processors)
+[j-074:94774] MCW rank 7 is not bound (or bound to all available processors)
+[j-068:98993] MCW rank 1 is not bound (or bound to all available processors)
+[j-067:102856] MCW rank 0 is not bound (or bound to all available processors)
+[j-076:96903] MCW rank 9 is not bound (or bound to all available processors)
+[j-079:211498] MCW rank 11 is not bound (or bound to all available processors)
+[j-072:122181] MCW rank 5 is not bound (or bound to all available processors)
+[j-069:23826] MCW rank 2 is not bound (or bound to all available processors)
+[j-071:98611] MCW rank 4 is not bound (or bound to all available processors)
+[j-075:187907] MCW rank 8 is not bound (or bound to all available processors)
+[j-080:204070] MCW rank 12 is not bound (or bound to all available processors)
+[j-081:10461] MCW rank 13 is not bound (or bound to all available processors)
+[j-078:42467] MCW rank 10 is not bound (or bound to all available processors)
+[j-073:99684] MCW rank 6 is not bound (or bound to all available processors)
+[j-083:10037] MCW rank 14 is not bound (or bound to all available processors)
+=== Program Started on 07/25/2016 01:04:15 ===
+  Reading points ... 
+    Done in 20 ms
+  Reading centers ...
+    Done in 19 ms
+  Computing K-Means .. 
+    Stopping K-Means as max iteration count 100 has reached
+    Done in 100 iterations and 158479.67563569546 158468.45316886902 158492.3219680786 23.868799209594727
+    Compute time (thread 0 avg across MPI) 142369.50439214706 141175.58407783508 144605.21268844604 3429.628610610962
+    Comm time (thread 0 avg across MPI) 10705.62720298767 7503.146171569824 12606.250524520874 5103.10435295105
+    Barrier time (thread 0 avg across MPI) 0.0445246696472168 0.03552436828613281 0.08726119995117188 0.05173683166503906
+  Gathering cluster assignments ...
+    Done
+  Writing output file ...
+    Done
+=== Program terminated successfully on 07/25/2016 01:06:55 took 160487 ms ===

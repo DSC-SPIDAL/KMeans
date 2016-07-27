@@ -1,0 +1,32 @@
+[j-084:02574] MCW rank 15 is not bound (or bound to all available processors)
+[j-074:94640] MCW rank 7 is not bound (or bound to all available processors)
+[j-070:94806] MCW rank 3 is not bound (or bound to all available processors)
+[j-068:98848] MCW rank 1 is not bound (or bound to all available processors)
+[j-067:102705] MCW rank 0 is not bound (or bound to all available processors)
+[j-079:211367] MCW rank 11 is not bound (or bound to all available processors)
+[j-076:96770] MCW rank 9 is not bound (or bound to all available processors)
+[j-072:122042] MCW rank 5 is not bound (or bound to all available processors)
+[j-071:98472] MCW rank 4 is not bound (or bound to all available processors)
+[j-069:23681] MCW rank 2 is not bound (or bound to all available processors)
+[j-075:187774] MCW rank 8 is not bound (or bound to all available processors)
+[j-081:10330] MCW rank 13 is not bound (or bound to all available processors)
+[j-080:203939] MCW rank 12 is not bound (or bound to all available processors)
+[j-073:99545] MCW rank 6 is not bound (or bound to all available processors)
+[j-078:42335] MCW rank 10 is not bound (or bound to all available processors)
+[j-083:09906] MCW rank 14 is not bound (or bound to all available processors)
+=== Program Started on 07/25/2016 01:02:27 ===
+  Reading points ... 
+    Done in 11 ms
+  Reading centers ...
+    Done in 1 ms
+  Computing K-Means .. 
+    Stopping K-Means as max iteration count 100 has reached
+    Done in 100 iterations and 16357.452496886253 16346.297979354858 16374.706983566284 28.40900421142578
+    Compute time (thread 0 avg across MPI) 14462.727755308151 14196.461200714111 14573.278188705444 376.816987991333
+    Comm time (thread 0 avg across MPI) 1031.99203312397 724.3344783782959 1247.4572658538818 523.1227874755859
+    Barrier time (thread 0 avg across MPI) 0.0241696834564209 0.017881393432617188 0.029802322387695312 0.011920928955078125
+  Gathering cluster assignments ...
+    Done
+  Writing output file ...
+    Done
+=== Program terminated successfully on 07/25/2016 01:02:45 took 18371 ms ===

@@ -1,0 +1,32 @@
+[j-074:94705] MCW rank 7 is not bound (or bound to all available processors)
+[j-068:98919] MCW rank 1 is not bound (or bound to all available processors)
+[j-084:02640] MCW rank 15 is not bound (or bound to all available processors)
+[j-067:102779] MCW rank 0 is not bound (or bound to all available processors)
+[j-070:94874] MCW rank 3 is not bound (or bound to all available processors)
+[j-069:23752] MCW rank 2 is not bound (or bound to all available processors)
+[j-079:211432] MCW rank 11 is not bound (or bound to all available processors)
+[j-072:122110] MCW rank 5 is not bound (or bound to all available processors)
+[j-076:96835] MCW rank 9 is not bound (or bound to all available processors)
+[j-075:187839] MCW rank 8 is not bound (or bound to all available processors)
+[j-071:98540] MCW rank 4 is not bound (or bound to all available processors)
+[j-073:99613] MCW rank 6 is not bound (or bound to all available processors)
+[j-081:10395] MCW rank 13 is not bound (or bound to all available processors)
+[j-080:204004] MCW rank 12 is not bound (or bound to all available processors)
+[j-078:42400] MCW rank 10 is not bound (or bound to all available processors)
+[j-083:09971] MCW rank 14 is not bound (or bound to all available processors)
+=== Program Started on 07/25/2016 01:02:47 ===
+  Reading points ... 
+    Done in 12 ms
+  Reading centers ...
+    Done in 5 ms
+  Computing K-Means .. 
+    Stopping K-Means as max iteration count 100 has reached
+    Done in 100 iterations and 84013.17627727985 84008.37302207947 84022.7439403534 14.370918273925781
+    Compute time (thread 0 avg across MPI) 72277.14596688747 71391.91842079163 73153.6877155304 1761.7692947387695
+    Comm time (thread 0 avg across MPI) 7859.550192952156 6521.956205368042 9126.518487930298 2604.562282562256
+    Barrier time (thread 0 avg across MPI) 0.04030764102935791 0.02956390380859375 0.061511993408203125 0.031948089599609375
+  Gathering cluster assignments ...
+    Done
+  Writing output file ...
+    Done
+=== Program terminated successfully on 07/25/2016 01:04:13 took 86011 ms ===

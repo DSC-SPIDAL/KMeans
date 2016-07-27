@@ -1,0 +1,48 @@
+[j-074:94225] MCW rank 15 is not bound (or bound to all available processors)
+[j-084:02265] MCW rank 31 is not bound (or bound to all available processors)
+[j-074:94225] MCW rank 14 is not bound (or bound to all available processors)
+[j-084:02265] MCW rank 30 is not bound (or bound to all available processors)
+[j-068:98414] MCW rank 2 is not bound (or bound to all available processors)
+[j-068:98414] MCW rank 3 is not bound (or bound to all available processors)
+[j-070:94381] MCW rank 6 is not bound (or bound to all available processors)
+[j-070:94381] MCW rank 7 is not bound (or bound to all available processors)
+[j-067:102219] MCW rank 0 is not bound (or bound to all available processors)
+[j-067:102219] MCW rank 1 is not bound (or bound to all available processors)
+[j-069:23246] MCW rank 4 is not bound (or bound to all available processors)
+[j-069:23246] MCW rank 5 is not bound (or bound to all available processors)
+[j-076:96355] MCW rank 19 is not bound (or bound to all available processors)
+[j-079:211061] MCW rank 23 is not bound (or bound to all available processors)
+[j-076:96355] MCW rank 18 is not bound (or bound to all available processors)
+[j-079:211061] MCW rank 22 is not bound (or bound to all available processors)
+[j-072:121620] MCW rank 11 is not bound (or bound to all available processors)
+[j-072:121620] MCW rank 10 is not bound (or bound to all available processors)
+[j-071:98045] MCW rank 9 is not bound (or bound to all available processors)
+[j-075:187359] MCW rank 16 is not bound (or bound to all available processors)
+[j-071:98045] MCW rank 8 is not bound (or bound to all available processors)
+[j-075:187359] MCW rank 17 is not bound (or bound to all available processors)
+[j-081:10027] MCW rank 27 is not bound (or bound to all available processors)
+[j-078:42029] MCW rank 21 is not bound (or bound to all available processors)
+[j-081:10027] MCW rank 26 is not bound (or bound to all available processors)
+[j-080:203634] MCW rank 24 is not bound (or bound to all available processors)
+[j-078:42029] MCW rank 20 is not bound (or bound to all available processors)
+[j-080:203634] MCW rank 25 is not bound (or bound to all available processors)
+[j-073:99119] MCW rank 13 is not bound (or bound to all available processors)
+[j-073:99119] MCW rank 12 is not bound (or bound to all available processors)
+[j-083:09601] MCW rank 29 is not bound (or bound to all available processors)
+[j-083:09601] MCW rank 28 is not bound (or bound to all available processors)
+=== Program Started on 07/25/2016 00:45:45 ===
+  Reading points ... 
+    Done in 8 ms
+  Reading centers ...
+    Done in 9 ms
+  Computing K-Means .. 
+    Stopping K-Means as max iteration count 100 has reached
+    Done in 100 iterations and 151861.45784705877 151839.72692489624 151882.82799720764 43.10107231140137
+    Compute time (thread 0 avg across MPI) 141686.03138625622 139818.6159133911 143557.90638923645 3739.290475845337
+    Comm time (thread 0 avg across MPI) 7182.649061083794 5393.038034439087 8432.277202606201 3039.2391681671143
+    Barrier time (thread 0 avg across MPI) 0.17077475786209106 0.028133392333984375 0.9021759033203125 0.8740425109863281
+  Gathering cluster assignments ...
+    Done
+  Writing output file ...
+    Done
+=== Program terminated successfully on 07/25/2016 00:48:19 took 153917 ms ===
