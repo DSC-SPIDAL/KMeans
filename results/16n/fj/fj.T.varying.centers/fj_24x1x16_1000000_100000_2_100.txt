@@ -1,0 +1,43 @@
+--------------------------------------------------------------------------
+WARNING: a request was made to bind a process. While the system
+supports binding the process itself, at least one node does NOT
+support binding memory to the process location.
+
+  Node:  j-001
+
+This usually is due to not having the required NUMA support installed
+on the node. In some Linux distributions, the required support is
+contained in the libnumactl and libnumactl-devel packages.
+This is a warning only; your job will continue, though performance may be degraded.
+--------------------------------------------------------------------------
+[j-035:136547] MCW rank 3 is not bound (or bound to all available processors)
+[j-088:201293] MCW rank 7 is not bound (or bound to all available processors)
+[j-096:174875] MCW rank 15 is not bound (or bound to all available processors)
+[j-021:227077] MCW rank 1 is not bound (or bound to all available processors)
+[j-001:260112] MCW rank 0 is not bound (or bound to all available processors)
+[j-090:173591] MCW rank 9 is not bound (or bound to all available processors)
+[j-092:256683] MCW rank 11 is not bound (or bound to all available processors)
+[j-089:105379] MCW rank 8 is not bound (or bound to all available processors)
+[j-086:56792] MCW rank 5 is not bound (or bound to all available processors)
+[j-022:93126] MCW rank 2 is not bound (or bound to all available processors)
+[j-094:59178] MCW rank 13 is not bound (or bound to all available processors)
+[j-091:144920] MCW rank 10 is not bound (or bound to all available processors)
+[j-087:223793] MCW rank 6 is not bound (or bound to all available processors)
+[j-085:31287] MCW rank 4 is not bound (or bound to all available processors)
+[j-093:67646] MCW rank 12 is not bound (or bound to all available processors)
+[j-095:68676] MCW rank 14 is not bound (or bound to all available processors)
+=== Program Started on 07/28/2016 03:21:33 ===
+  Reading points ... 
+    Done in 11 ms
+  Reading centers ...
+    Done in 10 ms
+  Allocating buffers
+  Done in 3
+  Computing K-Means .. 
+    Stopping K-Means as max iteration count 100 has reached
+    Done in 100 iterations and 675896.3125 ms on average (across all MPI)
+  Gathering cluster assignments ...
+    Done in 3.875 ms on average
+  Writing output file ...
+    Done in 1811ms
+=== Program terminated successfully on 07/28/2016 03:32:50 took 677761 ms ===
