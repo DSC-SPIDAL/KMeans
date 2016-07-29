@@ -19,8 +19,9 @@ b=true
 T=$1
 COMMENT
 
-centers=(1000 10000 50000 100000 500000)
+#centers=(1000 10000 50000 100000 500000)
 #centers=(10000)
+centers=(16000)
 
 for cen in ${centers[@]}; do
   wd=/N/u/sekanaya/sali/projects/flink/kmeans/data2
