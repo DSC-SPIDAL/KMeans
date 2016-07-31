@@ -4,7 +4,7 @@
 explicitbind=$1
 #can be core/socket/none
 procbind=$2
-nodes=16
+nodes=1
 name="$nodes"n
 nodefile=nodes.$name.txt
 :<<COMMENT

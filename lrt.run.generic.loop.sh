@@ -25,7 +25,8 @@ centers=(16000)
 
 for cen in ${centers[@]}; do
   wd=/N/u/sekanaya/sali/projects/flink/kmeans/data2
-  points=1000000
+  #points=1000000
+  points=100000
   exp="$points"_"$cen"
   p=$wd/$exp/points_BE.bin
   c=$wd/$exp/centers_BE.bin
@@ -66,7 +67,8 @@ for cen in ${centers[@]}; do
 
   if [ $procbind = "core" ]; then
       # with IB and bound to corresponding PEs
-      mpirun $btl --report-bindings --map-by ppr:$ppn:node:PE=$pe --bind-to core -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
+      #mpirun $btl --report-bindings --map-by ppr:$ppn:node:PE=$pe --bind-to core -hostfile $hostfile -np $(($nodes*$ppn)) perf stat -B -e page-faults,context-switches,cpu-migrations,major-faults,cache-references,cache-misses,cycles,instructions,branches,L1-dcache-load-misses,L1-icache-load-misses,LLC-loads,LLC-stores,dTLB-load-misses,dTLB-store-misses java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
+      mpirun $btl --report-bindings --map-by ppr:1:socket:PE=12 --bind-to core -hostfile $hostfile -np $(($nodes*$ppn)) perf stat -B -e page-faults,context-switches,cpu-migrations,major-faults,cache-references,cache-misses,cycles,instructions,branches,L1-dcache-load-misses,L1-icache-load-misses,LLC-loads,LLC-stores,dTLB-load-misses,dTLB-store-misses java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
   elif [ $procbind = "socket" ]; then
      # with IB and bound to socket
      mpirun $btl --report-bindings --map-by ppr:$ppn:node --bind-to socket -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
