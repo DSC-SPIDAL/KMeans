@@ -139,7 +139,8 @@ public class Program {
 
             double[] threadComputTimes = new double[numThreads];
             IntStream.range(0, numThreads).forEach(i -> threadComputTimes[i] = 0.0);
-            while (!converged && itrCount < maxIterations) {
+//            while (!converged && itrCount < maxIterations) {
+            while (itrCount < maxIterations) {
                 ++itrCount;
                 resetCenterSumsAndCounts(centerSumsAndCountsForThread);
 
