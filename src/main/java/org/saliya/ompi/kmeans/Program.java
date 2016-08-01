@@ -136,6 +136,9 @@ public class Program {
             Stopwatch commTimerWithCopy = Stopwatch.createUnstarted();
             Stopwatch commTimer = Stopwatch.createUnstarted();
             long[] times = new long[]{0, 0, 0};
+
+            double[] threadComputTimes = new double[numThreads];
+            IntStream.range(0, numThreads).forEach(i -> threadComputTimes[i] = 0.0);
             while (!converged && itrCount < maxIterations) {
                 ++itrCount;
                 resetCenterSumsAndCounts(centerSumsAndCountsForThread);
@@ -149,12 +152,20 @@ public class Program {
                             Affinity.setAffinity(bitSet);
                         }
 
-                        findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
-                                clusterAssignments, threadIdx);
+                        try {
+                            double t = MPI.wtime();
+                            findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
+                                    clusterAssignments, threadIdx);
+                            threadComputTimes[threadIdx] += (MPI.wtime() - t)*1e3; //milliseconds
+                        } catch (MPIException e) {
+                            e.printStackTrace();
+                        }
                     }));
                 } else {
+                    double t = MPI.wtime();
                     findNearesetCenters(dimension, numCenters, points, centers, centerSumsAndCountsForThread,
                             clusterAssignments, 0);
+                    threadComputTimes[0] += (MPI.wtime() - t)*1e3;
                 }
 
                 if (numThreads > 1) {
@@ -178,7 +189,6 @@ public class Program {
 //                    ParallelOps.worldProcsComm.allReduce(doubleBuffer, (dimension+1) * numCenters, MPI.DOUBLE, MPI.SUM);
                     // NOTE - change to mmap call
                     ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
-
 //                    commTimer.stop();
 //                    copyFromBuffer(doubleBuffer, centerSumsAndCountsForThread, numCenters*(dimension+1));
 //                    commTimerWithCopy.stop();
@@ -206,8 +216,26 @@ public class Program {
             times[2] = loopTimer.elapsed(TimeUnit.MILLISECONDS);
             loopTimer.reset();
 
+
+            /* Find min and max computing times across threads*/
+            double[] tmpMin = new double[]{threadComputTimes[0]};
+            double[] tmpMax = new double[]{threadComputTimes[0]};
+            double t;
+            for (int i = 1; i < numThreads; ++i){
+                t = threadComputTimes[i];
+                if (t > tmpMax[0]){
+                    tmpMax[0] = t;
+                }
+                if (t < tmpMin[0]){
+                    tmpMin[0] = t;
+                }
+            }
+
+
             if (ParallelOps.worldProcsCount > 1) {
                 ParallelOps.worldProcsComm.reduce(times, 3, MPI.LONG, MPI.SUM, 0);
+                ParallelOps.worldProcsComm.allReduce(tmpMin, 1, MPI.DOUBLE, MPI.MIN);
+                ParallelOps.worldProcsComm.allReduce(tmpMax, 1, MPI.DOUBLE, MPI.MAX);
             }
             if (!converged) {
                 print("    Stopping K-Means as max iteration count " +
@@ -216,6 +244,7 @@ public class Program {
             }
             print("    Done in " + itrCount + " iterations and " +
                     times[2] * 1.0 / ParallelOps.worldProcsCount + " ms on average (across all MPI)");
+            print("      Compute time ms (across all threads and procs) min " + tmpMin[0] + " max " + tmpMax[0] + " diff " + (tmpMax[0] - tmpMin[0]));
             /*if (ParallelOps.worldProcsCount > 1) {
                 print("    Avg. comm time " +
                         times[1] * 1.0 / ParallelOps.worldProcsCount +
