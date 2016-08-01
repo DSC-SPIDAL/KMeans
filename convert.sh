@@ -7,7 +7,7 @@ t=tb
 base_dir=/N/u/sekanaya/sali/projects/flink/kmeans/data2/
 
 points=(100000)
-centers=(16000)
+centers=(1000)
 
 for p in ${points[@]}; do
   for c in ${centers[@]}; do
