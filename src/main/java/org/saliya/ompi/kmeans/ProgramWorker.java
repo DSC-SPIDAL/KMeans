@@ -75,7 +75,8 @@ public class ProgramWorker {
 //        ArrayList<Double> timings = new ArrayList<>();
         double computeTime;
 
-        while (!converged && itrCount < maxIterations) {
+//        while (!converged && itrCount < maxIterations) {
+        while (itrCount < maxIterations) {
             // Note. adding a barrier to begin with to show the variation with compute timings
             // ParallelOps.worldProcsComm.barrier();
 
