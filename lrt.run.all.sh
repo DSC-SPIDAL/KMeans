@@ -21,8 +21,8 @@ list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin /dev/shm/*.bin"
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin /dev/shm/*.bin"
 ./lrt.run.generic.sh 8 3 $nodefile $nodes 8 g $explicitbind $procbind
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin /dev/shm/*.bin"
+COMMENT
 ./lrt.run.generic.sh 12 2 $nodefile $nodes 12 g $explicitbind $procbind
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin /dev/shm/*.bin"
 ./lrt.run.generic.sh 24 1 $nodefile $nodes 24 g $explicitbind $procbind
 list.cmd.sh $nodefile "rm -rf /dev/shm/$USER/*.bin /dev/shm/*.bin"
-COMMENT
