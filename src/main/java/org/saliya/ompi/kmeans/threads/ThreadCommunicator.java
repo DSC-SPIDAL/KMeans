@@ -11,16 +11,22 @@ public class ThreadCommunicator {
     private AtomicInteger bcastDoubleCount = new AtomicInteger(0);
     private AtomicInteger bcastBoolCount = new AtomicInteger(0);
     private AtomicInteger collectCount = new AtomicInteger(0);
+    private AtomicInteger minTimingCount = new AtomicInteger(0);
+    private AtomicInteger maxTimingCount = new AtomicInteger(0);
 //    private double[] doubleBufferArray;
     private DoubleBuffer doubleBuffer;
     private int[] intBuffer;
     private boolean booleanBuffer;
+    private double[] minTimingBuffer;
+    private double[] maxTimingBuffer;
 
     public ThreadCommunicator(int numThreads, int numCenters, int dimensions) {
         this.numThreads = numThreads;
 //        doubleBufferArray = new double[numThreads*numCenters*(dimensions+1)];
         doubleBuffer = DoubleBuffer.allocate(numThreads*numCenters*(dimensions+1));
         intBuffer = new int[ParallelOps.pointsForProc];
+        minTimingBuffer = new double[numThreads];
+        maxTimingBuffer = new double[numThreads];
     }
 
     /* The  structure of the vals should be
@@ -82,9 +88,6 @@ public class ThreadCommunicator {
         }
     }
 
-
-
-
     public boolean bcastBooleanOverThreads(int threadIdx, boolean val, int root) {
         bcastBoolCount.compareAndSet(numThreads, 0);
         if (threadIdx == root){
@@ -99,6 +102,50 @@ public class ThreadCommunicator {
         }
         return booleanBuffer;
     }
+
+    public double findMinOverThreads(int threadIdx, double val) {
+        minTimingCount.compareAndSet(numThreads, 0);
+        minTimingBuffer[threadIdx] = val;
+        minTimingCount.getAndIncrement();
+
+        if (threadIdx != 0){
+            while (minTimingCount.get() != numThreads) {
+                ;
+            }
+        }
+        double tMin = minTimingBuffer[0];
+        double tmp;
+        for (int i = 1; i < numThreads; ++i){
+            tmp = minTimingBuffer[i];
+            if (tmp < tMin){
+                tMin = tmp;
+            }
+        }
+        return tMin;
+    }
+
+    public double findMaxOverThreads(int threadIdx, double val) {
+        maxTimingCount.compareAndSet(numThreads, 0);
+        maxTimingBuffer[threadIdx] = val;
+        maxTimingCount.getAndIncrement();
+
+        if (threadIdx != 0){
+            while (maxTimingCount.get() != numThreads) {
+                ;
+            }
+        }
+        double tMax = maxTimingBuffer[0];
+        double tmp;
+        for (int i = 1; i < numThreads; ++i){
+            tmp = maxTimingBuffer[i];
+            if (tmp > tMax){
+                tMax = tmp;
+            }
+        }
+        return tMax;
+    }
+
+
     public int[] collect(int threadIdx, int[] val) {
         collectCount.compareAndSet(numThreads, 0);
         int pos = ParallelOps.pointStartIdxForThread[threadIdx];

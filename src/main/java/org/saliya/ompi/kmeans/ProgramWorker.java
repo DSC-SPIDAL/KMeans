@@ -164,6 +164,10 @@ public class ProgramWorker {
 
         double [] minTimes = new double[4];
         double [] maxTimes = new double[4];
+
+        minTimes[1] = threadComm.findMinOverThreads(threadIdx, times[1]);
+        maxTimes[1] = threadComm.findMaxOverThreads(threadIdx, times[1]);
+
         if (ParallelOps.worldProcsCount > 1 && threadIdx == 0) {
             ParallelOps.worldProcsComm.reduce(times, minTimes, 4, MPI.DOUBLE, MPI.MIN, 0);
             ParallelOps.worldProcsComm.reduce(times, maxTimes, 4, MPI.DOUBLE, MPI.MAX, 0);
@@ -224,7 +228,7 @@ public class ProgramWorker {
             print("    Barrier time (thread 0 avg across MPI) " + times[3] * 1.0 / ParallelOps.worldProcsCount + " ms");*/
             print("    Done in " + itrCount + " iterations and " +
                     times[0] * 1.0 / ParallelOps.worldProcsCount + " " + minTimes[0] + " " + maxTimes[0] + " " + (maxTimes[0] - minTimes[0]));
-            print("    Compute time (thread 0 avg across MPI) " + times[1] * 1.0 / ParallelOps.worldProcsCount + " " + minTimes[1] + " " + maxTimes[1] + " " + (maxTimes[1] - minTimes[1]));
+            print("    Compute time ms (across all threads and procs) min " + minTimes[1] + " max " + maxTimes[1] + " diff " + (maxTimes[1] - minTimes[1]));
             print("    Comm time (thread 0 avg across MPI) " + times[2] * 1.0 / ParallelOps.worldProcsCount + " " + minTimes[2] + " " + maxTimes[2] + " " + (maxTimes[2] - minTimes[2]));
             print("    Barrier time (thread 0 avg across MPI) " + times[3] * 1.0 / ParallelOps.worldProcsCount + " " + minTimes[3] + " " + maxTimes[3] + " " + (maxTimes[3] - minTimes[3]));
         }
