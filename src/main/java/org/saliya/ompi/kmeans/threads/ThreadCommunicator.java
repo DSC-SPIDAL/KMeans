@@ -108,7 +108,7 @@ public class ThreadCommunicator {
         minTimingBuffer[threadIdx] = val;
         minTimingCount.getAndIncrement();
 
-        if (threadIdx != 0){
+        if (threadIdx == 0){
             while (minTimingCount.get() != numThreads) {
                 ;
             }
@@ -129,7 +129,7 @@ public class ThreadCommunicator {
         maxTimingBuffer[threadIdx] = val;
         maxTimingCount.getAndIncrement();
 
-        if (threadIdx != 0){
+        if (threadIdx == 0){
             while (maxTimingCount.get() != numThreads) {
                 ;
             }
