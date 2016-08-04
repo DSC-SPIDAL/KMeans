@@ -159,8 +159,6 @@ public class ProgramWorker {
             }
         }
 
-        System.out.println("Rank: " + ParallelOps.worldProcRank + " Thread " + threadIdx + " " + times[1]);
-
         if (threadIdx == 0) {
             times[0] = (MPI.wtime() - loopTimer)*1000;
         }
