@@ -40,6 +40,7 @@ public class ProgramLRT {
         programOptions.addOption("mmpn", true, "mmaps per node");
         programOptions.addOption("mmdir", true, "mmaps dir");
         programOptions.addOption("bind", true, "Bind threads [true/false]");
+        programOptions.addOption("partition", true, "Partitioned points [true/false]");
     }
 
     public static void main(String[] args) throws IOException, MPIException {
@@ -72,6 +73,7 @@ public class ProgramLRT {
         int mmapsPerNode = cmd.hasOption("mmpn") ? Integer.parseInt(cmd.getOptionValue("mmpn")) : 1;
         String mmapDir = cmd.hasOption("mmdir") ? cmd.getOptionValue("mmdir") : "/dev/shm";
         boolean bind = !cmd.hasOption("bind") || Boolean.parseBoolean(cmd.getOptionValue("bind"));
+        boolean pointsPartitioned = !cmd.hasOption("partition") || Boolean.parseBoolean(cmd.getOptionValue("partition"));
 
         ParallelOps.setupParallelism(args, mmapsPerNode, mmapDir);
         ParallelOps.setParallelDecomposition(numPoints, dimension, numCenters, numThreads);
@@ -82,9 +84,15 @@ public class ProgramLRT {
         print("  Reading points ... ");
 
         Stopwatch timer = Stopwatch.createStarted();
-        final double[] points = readPoints(pointsFile, dimension, ParallelOps.pointStartIdxForProc,
+        int localRank = Integer.parseInt(System.getenv("OMPI_COMM_WORLD_LOCAL_RANK"));
+        final double[] points;
+        if (!pointsPartitioned) {
+            points = readPoints(pointsFile, dimension, ParallelOps.pointStartIdxForProc,
                 ParallelOps.pointsForProc, isBigEndian);
-
+        } else {
+            points = readPoints(pointsFile + localRank, dimension, 0,
+                ParallelOps.pointsForProc, isBigEndian);
+        }
         timer.stop();
         print("    Done in " + timer.elapsed(TimeUnit.MILLISECONDS) + " ms");
         timer.reset();
