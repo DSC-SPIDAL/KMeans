@@ -41,7 +41,7 @@ public class DataGenerator
 
         CommandLine cmd = parserResult.get();
         if (!(cmd.hasOption("n") && cmd.hasOption("d") && cmd.hasOption("k") &&
-              cmd.hasOption("o") && cmd.hasOption("b") && cmd.hasOption("t")))
+              cmd.hasOption("p") && cmd.hasOption("b") && cmd.hasOption("t") && cmd.hasOption("c")))
         {
             System.out.println(Utils.ERR_INVALID_PROGRAM_ARGUMENTS);
             new HelpFormatter().printHelp(Utils.PROGRAM_NAME, programOptions);
