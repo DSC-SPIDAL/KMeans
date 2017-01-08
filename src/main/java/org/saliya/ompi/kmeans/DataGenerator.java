@@ -23,7 +23,8 @@ public class DataGenerator
         programOptions.addOption("d", true, "Dimensionality");
         programOptions.addOption("k", true, "Number of centers");
         programOptions.addOption("b", true, "Is big-endian?");
-        programOptions.addOption("o", true, "Output directory");
+        programOptions.addOption("p", true, "Point file");
+        programOptions.addOption("c", true, "Center file");
         programOptions.addOption("t", true, "Is text?");
     }
 
@@ -52,26 +53,27 @@ public class DataGenerator
         int k = Integer.parseInt(cmd.getOptionValue("k"));
         boolean isBigEndian = Boolean.parseBoolean(cmd.getOptionValue("b"));
         boolean isText = Boolean.parseBoolean(cmd.getOptionValue("t"));
-        String outputDir = cmd.getOptionValue("o");
+        String pointFIle = cmd.getOptionValue("p");
+        String centerFile = cmd.getOptionValue("c");
 
 
         if (isText)
         {
-            generatePointsAsText(n, d, k, outputDir);
+            generatePointsAsText(n, d, k, pointFIle, centerFile);
         }
         else
         {
             generatePointsAsBinary(
-                n, d, k, isBigEndian, outputDir);
+                n, d, k, isBigEndian, pointFIle, centerFile);
 
         }
     }
 
     private static void generatePointsAsText(
-        int n, int d, int k, String outputDir)
+        int n, int d, int k, String pointFile, String centerFile)
     {
-        Path pointsFile = Paths.get(outputDir, "points.txt");
-        Path centersFile = Paths.get(outputDir, "centers.txt");
+        Path pointsFile = Paths.get(pointFile);
+        Path centersFile = Paths.get(centerFile);
 
         try (PrintWriter pointsWriter = new PrintWriter(
             Files.newBufferedWriter(
@@ -109,11 +111,11 @@ public class DataGenerator
     }
 
     private static void generatePointsAsBinary(
-        int n, int d, int k, boolean isBigEndian, String outputDir)
+        int n, int d, int k, boolean isBigEndian, String pointFile, String centerFile)
         throws IOException
     {
-        Path pointsFile = Paths.get(outputDir, "points.bin");
-        Path centersFile = Paths.get(outputDir, "centers.bin");
+        Path pointsFile = Paths.get(pointFile);
+        Path centersFile = Paths.get(centerFile);
         try (
             BufferedOutputStream pointBufferedStream = new BufferedOutputStream(
                 Files.newOutputStream(pointsFile, StandardOpenOption.CREATE));
