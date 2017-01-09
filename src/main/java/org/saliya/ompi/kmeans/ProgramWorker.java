@@ -79,7 +79,7 @@ public class ProgramWorker {
         while (itrCount < maxIterations) {
             // Note. adding a barrier to begin with to show the variation with compute timings
             // ParallelOps.worldProcsComm.barrier();
-
+print(String.format("Iteration number: %d", itrCount));
             ++itrCount;
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
 
@@ -255,7 +255,7 @@ public class ProgramWorker {
 
                 if (ParallelOps.worldProcRank == 0) {
                     print("  Writing output file ...");
-                    try (PrintWriter writer = new PrintWriter(
+                    /*try (PrintWriter writer = new PrintWriter(
                             Files.newBufferedWriter(Paths.get(outputFile), Charset.defaultCharset(), StandardOpenOption.CREATE, StandardOpenOption.WRITE), true)) {
                         PointReader reader = PointReader.readRowRange(pointsFile, 0, numPoints, dimension, isBigEndian);
                         double[] point = new double[dimension];
@@ -265,7 +265,7 @@ public class ProgramWorker {
                                     ((ParallelOps.worldProcsCount > 1) ? intBuffer.get(i) : clusterAssignmentsForProc[i]));
                         }
                     }
-                    print("    Done");
+                    print("    Done");*/
                 }
             }
         }
