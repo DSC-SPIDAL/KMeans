@@ -1,0 +1,937 @@
+--------------------------------------------------------------------------
+WARNING: a request was made to bind a process. While the system
+supports binding the process itself, at least one node does NOT
+support binding memory to the process location.
+
+  Node:  j-035
+
+This usually is due to not having the required NUMA support installed
+on the node. In some Linux distributions, the required support is
+contained in the libnumactl and libnumactl-devel packages.
+This is a warning only; your job will continue, though performance may be degraded.
+--------------------------------------------------------------------------
+[j-036:171622] MCW rank 36 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-036:171622] MCW rank 37 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-036:171622] MCW rank 38 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-036:171622] MCW rank 39 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-036:171622] MCW rank 20 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 21 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 22 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 23 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 24 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 25 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 26 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 27 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 28 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 76 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-036:171622] MCW rank 29 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 77 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-036:171622] MCW rank 30 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 78 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-036:171622] MCW rank 31 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 79 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-036:171622] MCW rank 32 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-036:171622] MCW rank 33 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-038:168350] MCW rank 60 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 61 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 34 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-038:168350] MCW rank 62 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:171622] MCW rank 35 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+[j-038:168350] MCW rank 63 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 64 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 65 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 66 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 67 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 68 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 69 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 0 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 70 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 71 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 1 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 72 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-035:183805] MCW rank 2 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 73 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-035:183805] MCW rank 3 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 4 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-038:168350] MCW rank 74 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-038:168350] MCW rank 75 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+[j-035:183805] MCW rank 5 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 6 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 7 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 8 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 9 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 10 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 11 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-035:183805] MCW rank 12 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-035:183805] MCW rank 13 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-035:183805] MCW rank 14 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-035:183805] MCW rank 15 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+[j-035:183805] MCW rank 16 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-035:183805] MCW rank 17 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-035:183805] MCW rank 18 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-035:183805] MCW rank 19 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-037:168904] MCW rank 56 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-037:168904] MCW rank 57 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-037:168904] MCW rank 58 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-037:168904] MCW rank 59 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-037:168904] MCW rank 40 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 41 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 42 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 43 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 44 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 45 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 46 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 47 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 48 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 49 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 50 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 51 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-037:168904] MCW rank 52 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-037:168904] MCW rank 53 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-037:168904] MCW rank 54 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-037:168904] MCW rank 55 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+=== Program Started on 01/09/2017 23:28:33 ===
+  Reading points ... 
+    Done in 134 ms
+  Reading centers ...
+    Done in 2 ms
+  Computing K-Means .. 
+Iteration number: 0
+Rank 50 compute time 28385
+Rank 27 compute time 28414
+Rank 24 compute time 28421
+Rank 38 compute time 28419
+Rank 22 compute time 28430
+Rank 36 compute time 28418
+Rank 58 compute time 28426
+Rank 19 compute time 28426
+Rank 62 compute time 28433
+Rank 51 compute time 28432
+Rank 67 compute time 28433
+Rank 29 compute time 28437
+Rank 46 compute time 28437
+Rank 44 compute time 28438
+Rank 47 compute time 28439
+Rank 57 compute time 28435
+Rank 6 compute time 28442
+Rank 59 compute time 28433
+Rank 37 compute time 28432
+Rank 64 compute time 28439
+Rank 14 compute time 28433
+Rank 54 compute time 28435
+Rank 41 compute time 28445
+Rank 60 compute time 28439
+Rank 68 compute time 28447
+Rank 73 compute time 28440
+Rank 26 compute time 28449
+Rank 30 compute time 28447
+Rank 66 compute time 28450
+Rank 61 compute time 28451
+Rank 15 compute time 28443
+Rank 35 compute time 28448
+Rank 70 compute time 28452
+Rank 17 compute time 28446
+Rank 45 compute time 28457
+Rank 53 compute time 28446
+Rank 12 compute time 28447
+Rank 1 compute time 28458
+Rank 79 compute time 28459
+Rank 56 compute time 28456
+Rank 8 compute time 28462
+Rank 10 compute time 28468
+Rank 65 compute time 28469
+Rank 49 compute time 28464
+Rank 74 compute time 28463
+Rank 42 compute time 28470
+Rank 28 compute time 28467
+Rank 75 compute time 28469
+Rank 11 compute time 28473
+Rank 23 compute time 28474
+Rank 32 compute time 28460
+Rank 76 compute time 28470
+Rank 39 compute time 28472
+Rank 69 compute time 28476
+Rank 9 compute time 28479
+Rank 4 compute time 28477
+Rank 7 compute time 28481
+Rank 3 compute time 28479
+Rank 16 compute time 28476
+Rank 63 compute time 28488
+Rank 72 compute time 28481
+Rank 52 compute time 28478
+Rank 13 compute time 28479
+Rank 21 compute time 28483
+Rank 2 compute time 28485
+Rank 25 compute time 28498
+Rank 48 compute time 28494
+Rank 33 compute time 28505
+Rank 31 compute time 28539
+Rank 18 compute time 28533
+Nearest centers: 1
+Rank 0 compute time 28547
+Rank 55 compute time 28549
+Rank 77 compute time 28555
+Rank 78 compute time 28556
+Rank 43 compute time 28559
+Rank 20 compute time 28569
+Rank 40 compute time 28571
+Rank 34 compute time 28562
+Rank 71 compute time 28585
+Rank 5 compute time 28613
+All reduce: 1
+Iteration number: 1
+Rank 76 compute time 28495
+Rank 38 compute time 28492
+Rank 69 compute time 28501
+Rank 66 compute time 28501
+Rank 70 compute time 28507
+Rank 67 compute time 28506
+Rank 51 compute time 28506
+Rank 46 compute time 28503
+Rank 41 compute time 28505
+Rank 35 compute time 28503
+Rank 29 compute time 28502
+Rank 36 compute time 28507
+Rank 68 compute time 28513
+Rank 49 compute time 28512
+Rank 59 compute time 28514
+Rank 57 compute time 28513
+Rank 30 compute time 28508
+Rank 73 compute time 28516
+Rank 6 compute time 28514
+Rank 74 compute time 28520
+Rank 79 compute time 28520
+Rank 15 compute time 28507
+Rank 58 compute time 28521
+Rank 39 compute time 28515
+Rank 44 compute time 28515
+Rank 23 compute time 28515
+Rank 77 compute time 28524
+Rank 11 compute time 28520
+Rank 3 compute time 28518
+Rank 50 compute time 28525
+Rank 9 compute time 28524
+Rank 53 compute time 28522
+Rank 52 compute time 28523
+Rank 32 compute time 28526
+Rank 61 compute time 28525
+Rank 63 compute time 28523
+Rank 24 compute time 28524
+Rank 45 compute time 28529
+Rank 7 compute time 28531
+Rank 54 compute time 28530
+Rank 10 compute time 28531
+Rank 28 compute time 28528
+Rank 13 compute time 28533
+Rank 27 compute time 28532
+Rank 16 compute time 28531
+Rank 14 compute time 28537
+Rank 56 compute time 28538
+Rank 62 compute time 28540
+Rank 60 compute time 28544
+Rank 72 compute time 28541
+Rank 65 compute time 28542
+Rank 47 compute time 28543
+Rank 4 compute time 28539
+Rank 12 compute time 28543
+Rank 8 compute time 28544
+Rank 48 compute time 28543
+Rank 22 compute time 28542
+Rank 37 compute time 28546
+Rank 21 compute time 28544
+Rank 42 compute time 28547
+Rank 25 compute time 28543
+Rank 43 compute time 28552
+Rank 26 compute time 28546
+Rank 2 compute time 28556
+Rank 19 compute time 28557
+Rank 34 compute time 28558
+Rank 17 compute time 28562
+Rank 55 compute time 28568
+Rank 18 compute time 28563
+Rank 1 compute time 28571
+Rank 33 compute time 28577
+Rank 5 compute time 28580
+Rank 78 compute time 28594
+Nearest centers: 2
+Rank 0 compute time 28593
+Rank 31 compute time 28597
+Rank 71 compute time 28612
+Rank 20 compute time 28609
+Rank 64 compute time 28616
+Rank 40 compute time 28621
+Rank 75 compute time 28682
+All reduce: 2
+Iteration number: 2
+Rank 6 compute time 28088
+Rank 50 compute time 28112
+Rank 5 compute time 28133
+Rank 38 compute time 28174
+Rank 77 compute time 28241
+Rank 43 compute time 28261
+Rank 74 compute time 28268
+Rank 44 compute time 28282
+Rank 58 compute time 28286
+Rank 41 compute time 28287
+Rank 37 compute time 28295
+Rank 73 compute time 28284
+Rank 39 compute time 28293
+Rank 22 compute time 28292
+Rank 34 compute time 28296
+Rank 18 compute time 28293
+Rank 63 compute time 28295
+Rank 45 compute time 28298
+Rank 52 compute time 28300
+Rank 29 compute time 28298
+Rank 14 compute time 28297
+Rank 57 compute time 28304
+Rank 59 compute time 28303
+Rank 51 compute time 28301
+Rank 36 compute time 28301
+Rank 76 compute time 28299
+Rank 55 compute time 28306
+Rank 72 compute time 28302
+Rank 47 compute time 28306
+Rank 79 compute time 28301
+Rank 69 compute time 28302
+Rank 32 compute time 28304
+Rank 48 compute time 28306
+Rank 24 compute time 28304
+Rank 27 compute time 28303
+Rank 33 compute time 28307
+Rank 49 compute time 28309
+Rank 35 compute time 28308
+Rank 30 compute time 28308
+Rank 70 compute time 28307
+Rank 78 compute time 28305
+Rank 54 compute time 28311
+Rank 19 compute time 28307
+Rank 16 compute time 28307
+Rank 17 compute time 28307
+Rank 28 compute time 28312
+Rank 13 compute time 28310
+Rank 67 compute time 28311
+Rank 60 compute time 28313
+Rank 68 compute time 28313
+Rank 66 compute time 28313
+Rank 65 compute time 28315
+Rank 62 compute time 28318
+Rank 21 compute time 28318
+Rank 12 compute time 28319
+Rank 53 compute time 28324
+Rank 42 compute time 28324
+Rank 9 compute time 28321
+Rank 8 compute time 28320
+Rank 46 compute time 28326
+Rank 10 compute time 28322
+Rank 64 compute time 28334
+Rank 11 compute time 28324
+Rank 61 compute time 28336
+Rank 31 compute time 28340
+Rank 1 compute time 28337
+Rank 2 compute time 28364
+Rank 75 compute time 28378
+Rank 25 compute time 28376
+Rank 15 compute time 28376
+Rank 56 compute time 28384
+Rank 4 compute time 28382
+Rank 26 compute time 28392
+Rank 23 compute time 28396
+Nearest centers: 3
+Rank 0 compute time 28393
+Rank 71 compute time 28389
+Rank 3 compute time 28398
+Rank 7 compute time 28404
+Rank 20 compute time 28420
+Rank 40 compute time 28432
+All reduce: 3
+Iteration number: 3
+Rank 79 compute time 37787
+Rank 78 compute time 37808
+Rank 64 compute time 37844
+Rank 26 compute time 37908
+Rank 60 compute time 37917
+Rank 33 compute time 37919
+Rank 59 compute time 38012
+Rank 22 compute time 38015
+Rank 37 compute time 38002
+Rank 36 compute time 38103
+Rank 35 compute time 38172
+Rank 23 compute time 38198
+Rank 75 compute time 38202
+Rank 57 compute time 38254
+Rank 42 compute time 38277
+Rank 56 compute time 38295
+Rank 46 compute time 38301
+Rank 17 compute time 38337
+Rank 38 compute time 38359
+Rank 21 compute time 38367
+Rank 40 compute time 38388
+Rank 76 compute time 38410
+Rank 16 compute time 38428
+Rank 12 compute time 38434
+Rank 53 compute time 38433
+Rank 19 compute time 38439
+Rank 13 compute time 38456
+Rank 54 compute time 38571
+Rank 62 compute time 38588
+Rank 55 compute time 38615
+Rank 67 compute time 38637
+Rank 6 compute time 38768
+Rank 74 compute time 40898
+Rank 73 compute time 40927
+Nearest centers: 4
+Rank 0 compute time 40978
+Rank 7 compute time 41041
+Rank 9 compute time 41050
+Rank 65 compute time 41055
+Rank 25 compute time 41104
+Rank 71 compute time 41107
+Rank 45 compute time 41113
+Rank 4 compute time 41125
+Rank 15 compute time 41132
+Rank 28 compute time 41127
+Rank 70 compute time 41158
+Rank 48 compute time 41168
+Rank 30 compute time 41180
+Rank 3 compute time 41193
+Rank 66 compute time 41207
+Rank 1 compute time 41209
+Rank 63 compute time 41207
+Rank 41 compute time 41234
+Rank 58 compute time 41314
+Rank 43 compute time 41345
+Rank 10 compute time 41357
+Rank 39 compute time 41360
+Rank 44 compute time 41362
+Rank 34 compute time 41373
+Rank 31 compute time 41377
+Rank 29 compute time 41383
+Rank 61 compute time 41377
+Rank 72 compute time 41404
+Rank 68 compute time 41417
+Rank 51 compute time 41454
+Rank 32 compute time 41460
+Rank 50 compute time 41480
+Rank 20 compute time 41498
+Rank 47 compute time 41504
+Rank 11 compute time 41511
+Rank 5 compute time 41510
+Rank 14 compute time 41524
+Rank 52 compute time 41569
+Rank 69 compute time 41572
+Rank 77 compute time 41614
+Rank 18 compute time 41636
+Rank 2 compute time 41633
+Rank 27 compute time 41642
+Rank 49 compute time 41699
+Rank 8 compute time 41703
+Rank 24 compute time 41728
+All reduce: 4
+Iteration number: 4
+Rank 50 compute time 28105
+Rank 5 compute time 28123
+Rank 38 compute time 28184
+Rank 43 compute time 28191
+Rank 44 compute time 28214
+Rank 37 compute time 28271
+Rank 22 compute time 28274
+Rank 3 compute time 28282
+Rank 18 compute time 28289
+Rank 58 compute time 28284
+Rank 14 compute time 28292
+Rank 15 compute time 28292
+Rank 77 compute time 28290
+Rank 73 compute time 28291
+Rank 4 compute time 28292
+Rank 34 compute time 28288
+Rank 41 compute time 28288
+Rank 51 compute time 28292
+Rank 24 compute time 28295
+Rank 65 compute time 28296
+Rank 62 compute time 28295
+Rank 27 compute time 28296
+Rank 16 compute time 28301
+Rank 17 compute time 28301
+Rank 25 compute time 28298
+Rank 19 compute time 28303
+Rank 69 compute time 28299
+Rank 52 compute time 28297
+Rank 45 compute time 28297
+Rank 66 compute time 28300
+Rank 78 compute time 28302
+Rank 79 compute time 28303
+Rank 36 compute time 28301
+Rank 29 compute time 28301
+Rank 30 compute time 28302
+Rank 48 compute time 28300
+Rank 57 compute time 28301
+Rank 1 compute time 28305
+Rank 74 compute time 28304
+Rank 76 compute time 28306
+Rank 49 compute time 28302
+Rank 64 compute time 28304
+Rank 21 compute time 28305
+Rank 35 compute time 28303
+Rank 33 compute time 28302
+Rank 72 compute time 28306
+Rank 56 compute time 28304
+Rank 63 compute time 28305
+Rank 31 compute time 28306
+Rank 42 compute time 28304
+Rank 75 compute time 28311
+Rank 26 compute time 28312
+Rank 67 compute time 28311
+Rank 7 compute time 28313
+Rank 60 compute time 28310
+Rank 46 compute time 28310
+Rank 54 compute time 28312
+Nearest centers: 5
+Rank 0 compute time 28316
+Rank 12 compute time 28320
+Rank 23 compute time 28320
+Rank 68 compute time 28320
+Rank 71 compute time 28321
+Rank 59 compute time 28320
+Rank 6 compute time 28324
+Rank 13 compute time 28327
+Rank 61 compute time 28327
+Rank 2 compute time 28336
+Rank 8 compute time 28350
+Rank 39 compute time 28347
+Rank 53 compute time 28354
+Rank 20 compute time 28359
+Rank 40 compute time 28369
+Rank 55 compute time 38362
+Rank 9 compute time 40949
+Rank 28 compute time 40983
+Rank 70 compute time 41026
+Rank 10 compute time 41098
+Rank 32 compute time 41179
+Rank 11 compute time 41200
+Rank 47 compute time 41205
+All reduce: 5
+Iteration number: 5
+Rank 38 compute time 28149
+Rank 37 compute time 28255
+Rank 43 compute time 28276
+Rank 39 compute time 28287
+Rank 34 compute time 28290
+Rank 74 compute time 28287
+Rank 29 compute time 28292
+Rank 58 compute time 28286
+Rank 18 compute time 28291
+Rank 77 compute time 28289
+Rank 50 compute time 28290
+Rank 15 compute time 28293
+Rank 14 compute time 28293
+Rank 73 compute time 28291
+Rank 44 compute time 28294
+Rank 32 compute time 28299
+Rank 25 compute time 28300
+Rank 3 compute time 28297
+Rank 69 compute time 28295
+Rank 36 compute time 28303
+Rank 33 compute time 28303
+Rank 65 compute time 28296
+Rank 45 compute time 28300
+Rank 16 compute time 28304
+Rank 17 compute time 28304
+Rank 72 compute time 28300
+Rank 78 compute time 28302
+Rank 79 compute time 28303
+Rank 66 compute time 28301
+Rank 51 compute time 28302
+Rank 52 compute time 28304Rank 30 compute time 28308
+Rank 59 compute time 28303Rank 19 compute time 28308
+
+Rank 13 compute time 28308
+Rank 56 compute time 28305
+
+Rank 76 compute time 28305
+Rank 55 compute time 28306
+Rank 75 compute time 28307
+Rank 26 compute time 28312
+Rank 54 compute time 28308
+Rank 53 compute time 28309
+Rank 22 compute time 28314
+Rank 31 compute time 28315
+Rank 28 compute time 28316
+Rank 21 compute time 28316
+Rank 12 compute time 28315
+Rank 11 compute time 28314
+Rank 46 compute time 28315
+Rank 47 compute time 28316
+Rank 23 compute time 28318
+Rank 64 compute time 28318
+Rank 41 compute time 28322
+Rank 10 compute time 28322
+Rank 7 compute time 28321
+Rank 57 compute time 28321
+Rank 8 compute time 28323
+Rank 63 compute time 28322
+Rank 6 compute time 28326
+Rank 1 compute time 28324
+Rank 67 compute time 28325
+Rank 27 compute time 28332
+Rank 9 compute time 28330
+Rank 20 compute time 28334
+Rank 4 compute time 28335
+Rank 60 compute time 28337
+Rank 61 compute time 28342
+Rank 40 compute time 28346
+Rank 2 compute time 28346
+Rank 68 compute time 28344
+Rank 48 compute time 28351
+Rank 35 compute time 28358
+Rank 71 compute time 28356
+Rank 5 compute time 28365
+Rank 62 compute time 28362
+Rank 49 compute time 28370
+Nearest centers: 6
+Rank 0 compute time 28370
+Rank 70 compute time 28389
+Rank 24 compute time 28416
+Rank 42 compute time 28456
+All reduce: 6
+Iteration number: 6
+Rank 5 compute time 28141
+Rank 43 compute time 28183
+Rank 37 compute time 28243
+Rank 38 compute time 28251
+Rank 22 compute time 28266
+Rank 39 compute time 28287
+Rank 64 compute time 28278
+Rank 44 compute time 28282
+Rank 34 compute time 28290
+Rank 18 compute time 28288
+Rank 41 compute time 28289
+Rank 77 compute time 28287
+Rank 58 compute time 28288
+Rank 15 compute time 28291
+Rank 14 compute time 28292
+Rank 3 compute time 28292
+Rank 31 compute time 28295
+Rank 32 compute time 28299
+Rank 74 compute time 28293
+Rank 4 compute time 28294
+Rank 52 compute time 28294
+Rank 42 compute time 28297
+Rank 29 compute time 28300
+Rank 30 compute time 28301
+Rank 35 compute time 28303
+Rank 16 compute time 28301
+Rank 50 compute time 28300
+Rank 33 compute time 28304
+Rank 71 compute time 28298
+Rank 51 compute time 28299
+Rank 65 compute time 28297
+Rank 72 compute time 28299
+Rank 28 compute time 28304
+Rank 66 compute time 28299
+Rank 78 compute time 28301
+Rank 79 compute time 28301
+Rank 49 compute time 28302
+Rank 69 compute time 28301
+Rank 70 compute time 28303
+Rank 76 compute time 28303
+Rank 57 compute time 28303
+Rank 13 compute time 28306
+Rank 68 compute time 28303
+Rank 55 compute time 28304
+Rank 56 compute time 28304
+Rank 21 compute time 28309
+Rank 26 compute time 28312
+Rank 12 compute time 28309
+Rank 24 compute time 28311
+Rank 53 compute time 28310
+Rank 54 compute time 28310
+Rank 46 compute time 28310
+Rank 59 compute time 28310
+Rank 27 compute time 28315
+Rank 73 compute time 28312
+Rank 67 compute time 28311
+Rank 75 compute time 28312
+Rank 1 compute time 28311
+Rank 36 compute time 28319
+Rank 23 compute time 28319
+Rank 11 compute time 28316
+Rank 62 compute time 28314
+Rank 7 compute time 28319
+Rank 48 compute time 28322
+Rank 40 compute time 28325
+Rank 9 compute time 28325
+Rank 60 compute time 28319
+Rank 10 compute time 28325
+Rank 63 compute time 28322
+Rank 47 compute time 28327
+Rank 19 compute time 28330
+Rank 20 compute time 28331
+Rank 6 compute time 28329
+Rank 61 compute time 28331
+Rank 25 compute time 28341
+Nearest centers: 7
+Rank 0 compute time 28341
+Rank 2 compute time 28347
+Rank 45 compute time 28358
+Rank 8 compute time 28369
+Rank 17 compute time 28374
+All reduce: 7
+Iteration number: 7
+Rank 45 compute time 28088
+Rank 8 compute time 28131
+Rank 5 compute time 28139
+Rank 43 compute time 28165
+Rank 31 compute time 28210
+Rank 37 compute time 28244
+Rank 38 compute time 28268
+Rank 74 compute time 28286
+Rank 58 compute time 28286
+Rank 39 compute time 28287
+Rank 44 compute time 28290
+Rank 18 compute time 28290
+Rank 34 compute time 28291
+Rank 15 compute time 28292
+Rank 52 compute time 28294
+Rank 66 compute time 28298
+Rank 73 compute time 28298
+Rank 14 compute time 28293
+Rank 4 compute time 28296
+Rank 72 compute time 28300
+Rank 75 compute time 28301
+Rank 71 compute time 28301
+Rank 78 compute time 28302
+Rank 63 compute time 28299
+Rank 69 compute time 28301
+Rank 79 compute time 28302
+Rank 41 compute time 28295
+Rank 70 compute time 28302
+Rank 51 compute time 28299
+Rank 48 compute time 28299
+Rank 47 compute time 28299
+Rank 25 compute time 28296
+Rank 65 compute time 28302
+Rank 49 compute time 28301
+Rank 59 compute time 28303
+Rank 57 compute time 28302
+Rank 68 compute time 28303
+Rank 29 compute time 28300
+Rank 32 compute time 28301
+Rank 36 compute time 28302
+Rank 55 compute time 28305
+Rank 56 compute time 28305
+Rank 30 compute time 28301
+Rank 3 compute time 28305
+Rank 17 compute time 28303
+Rank 16 compute time 28303
+Rank 33 compute time 28303
+Rank 28 compute time 28302
+Rank 35 compute time 28305
+Rank 54 compute time 28306
+Rank 67 compute time 28310
+Rank 42 compute time 28308
+Rank 76 compute time 28313
+Rank 53 compute time 28311
+Rank 13 compute time 28308
+Rank 62 compute time 28313
+Rank 64 compute time 28314
+Rank 26 compute time 28310
+Rank 21 compute time 28310
+Rank 1 compute time 28314
+Rank 19 compute time 28311
+Rank 12 compute time 28314
+Rank 22 compute time 28313
+Rank 7 compute time 28318
+Rank 24 compute time 28316
+Rank 60 compute time 28321
+Rank 77 compute time 28325
+Rank 23 compute time 28323
+Rank 6 compute time 28327
+Rank 10 compute time 28326
+Rank 46 compute time 28327
+Rank 40 compute time 28329
+Rank 50 compute time 28332
+Rank 20 compute time 28330
+Rank 2 compute time 28346
+Rank 27 compute time 28347
+Rank 11 compute time 28351
+Rank 61 compute time 28361
+Rank 9 compute time 28383
+Nearest centers: 8
+Rank 0 compute time 28400
+All reduce: 8
+Iteration number: 8
+Rank 45 compute time 28112
+Rank 8 compute time 28131
+Rank 5 compute time 28140
+Rank 31 compute time 28209
+Rank 43 compute time 28221
+Rank 37 compute time 28242
+Rank 39 compute time 28287
+Rank 74 compute time 28286
+Rank 34 compute time 28290
+Rank 77 compute time 28290
+Rank 73 compute time 28291
+Rank 14 compute time 28291
+Rank 15 compute time 28291
+Rank 41 compute time 28296
+Rank 65 compute time 28297
+Rank 66 compute time 28297
+Rank 50 compute time 28299
+Rank 4 compute time 28294
+Rank 44 compute time 28298
+Rank 57 compute time 28301
+Rank 25 compute time 28296
+Rank 32 compute time 28299
+Rank 71 compute time 28298
+Rank 63 compute time 28299
+Rank 47 compute time 28300
+Rank 59 compute time 28302
+Rank 51 compute time 28301
+Rank 48 compute time 28300
+Rank 42 compute time 28301
+Rank 55 compute time 28303
+Rank 75 compute time 28300
+Rank 72 compute time 28300
+Rank 69 compute time 28299
+Rank 38 compute time 28302
+Rank 30 compute time 28301
+Rank 29 compute time 28300
+Rank 54 compute time 28305
+Rank 56 compute time 28306
+Rank 70 compute time 28302
+Rank 35 compute time 28304
+Rank 28 compute time 28303
+Rank 33 compute time 28303
+Rank 68 compute time 28303
+Rank 78 compute time 28302
+Rank 79 compute time 28302
+Rank 16 compute time 28302
+Rank 53 compute time 28308
+Rank 76 compute time 28304
+Rank 22 compute time 28305
+Rank 27 compute time 28307
+Rank 13 compute time 28305
+Rank 64 compute time 28308
+Rank 49 compute time 28311
+Rank 24 compute time 28309
+Rank 21 compute time 28308
+Rank 36 compute time 28311
+Rank 67 compute time 28310
+Rank 46 compute time 28314
+Rank 17 compute time 28311
+Rank 52 compute time 28315
+Rank 12 compute time 28311
+Rank 62 compute time 28314
+Rank 60 compute time 28315
+Rank 3 compute time 28314
+Rank 40 compute time 28319
+Rank 6 compute time 28316
+Rank 23 compute time 28318
+Rank 7 compute time 28318
+Rank 11 compute time 28319
+Rank 10 compute time 28323
+Rank 9 compute time 28324
+Rank 1 compute time 28320
+Rank 18 compute time 28326
+Rank 20 compute time 28330
+Rank 58 compute time 28339
+Rank 26 compute time 28335
+Rank 19 compute time 28349
+Rank 2 compute time 28348
+Nearest centers: 9
+Rank 0 compute time 28353
+Rank 61 compute time 28363
+All reduce: 9
+Iteration number: 9
+Rank 60 compute time 37832
+Rank 33 compute time 37865
+Rank 37 compute time 37897
+Rank 22 compute time 37902
+Rank 78 compute time 37907
+Rank 64 compute time 37922
+Rank 59 compute time 37931
+Rank 36 compute time 37986
+Rank 26 compute time 37985
+Rank 79 compute time 37983
+Rank 35 compute time 38030
+Rank 42 compute time 38085
+Rank 46 compute time 38096
+Rank 75 compute time 38093
+Rank 17 compute time 38134
+Rank 21 compute time 38141
+Rank 38 compute time 38152
+Rank 57 compute time 38169
+Rank 16 compute time 38166
+Rank 23 compute time 38179
+Rank 19 compute time 38179
+Rank 76 compute time 38193
+Rank 56 compute time 38199
+Rank 12 compute time 38210
+Rank 13 compute time 38218
+Rank 62 compute time 38255
+Rank 40 compute time 38279
+Rank 53 compute time 38293
+Rank 54 compute time 38305
+Rank 67 compute time 38308
+Rank 55 compute time 38635
+Rank 6 compute time 38744
+Rank 74 compute time 40860
+Nearest centers: 10
+Rank 0 compute time 40921
+Rank 65 compute time 40948
+Rank 48 compute time 40991
+Rank 41 compute time 40995
+Rank 1 compute time 40992
+Rank 34 compute time 41000
+Rank 30 compute time 40999
+Rank 66 compute time 41000
+Rank 45 compute time 41004
+Rank 63 compute time 41035
+Rank 73 compute time 41036
+Rank 7 compute time 41067
+Rank 44 compute time 41076
+Rank 9 compute time 41072
+Rank 3 compute time 41078
+Rank 58 compute time 41087
+Rank 43 compute time 41103
+Rank 31 compute time 41110
+Rank 4 compute time 41107
+Rank 39 compute time 41114
+Rank 25 compute time 41111
+Rank 72 compute time 41111
+Rank 29 compute time 41114
+Rank 71 compute time 41114
+Rank 68 compute time 41123
+Rank 28 compute time 41127
+Rank 15 compute time 41129
+Rank 70 compute time 41156
+Rank 50 compute time 41179
+Rank 5 compute time 41181
+Rank 69 compute time 41190
+Rank 61 compute time 41203
+Rank 14 compute time 41203
+Rank 2 compute time 41218
+Rank 52 compute time 41231
+Rank 77 compute time 41242
+Rank 51 compute time 41258
+Rank 18 compute time 41255
+Rank 27 compute time 41261
+Rank 10 compute time 41304
+Rank 20 compute time 41320
+Rank 32 compute time 41394
+Rank 47 compute time 41423
+Rank 11 compute time 41435
+Rank 8 compute time 41754
+Rank 49 compute time 41760
+Rank 24 compute time 41806
+All reduce: 10
+    Stopping K-Means as max iteration count 10 has reached
+    Done in 10 iterations and 324384.75709557533 324372.0660209656 324394.0842151642 22.0181941986084
+    Compute time ms (across all threads and procs) min 302417.2761440277 max 322754.4527053833 diff 20337.17656135559
+    Comm time (thread 0 avg across MPI) 16148.130032420158 1521.2922096252441 21846.35877609253 20325.066566467285
+    Barrier time (thread 0 avg across MPI) 0.027051568031311035 0.021696090698242188 0.051975250244140625 0.030279159545898438
+  Gathering cluster assignments ...
+    Done
+  Writing output file ...
+=== Program terminated successfully on 01/09/2017 23:34:03 took 330013 ms ===

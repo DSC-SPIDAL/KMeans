@@ -1,0 +1,349 @@
+--------------------------------------------------------------------------
+WARNING: a request was made to bind a process. While the system
+supports binding the process itself, at least one node does NOT
+support binding memory to the process location.
+
+  Node:  j-035
+
+This usually is due to not having the required NUMA support installed
+on the node. In some Linux distributions, the required support is
+contained in the libnumactl and libnumactl-devel packages.
+This is a warning only; your job will continue, though performance may be degraded.
+--------------------------------------------------------------------------
+[j-036:142453] MCW rank 36 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-035:152772] MCW rank 0 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 76 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-036:142453] MCW rank 37 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-035:152772] MCW rank 1 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 77 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-036:142453] MCW rank 38 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-035:152772] MCW rank 2 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 78 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-036:142453] MCW rank 39 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-035:152772] MCW rank 3 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 79 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-036:142453] MCW rank 20 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 4 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 60 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 21 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 5 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 22 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 6 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 7 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 61 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 23 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 62 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 24 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 8 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 63 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 25 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 64 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 65 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 9 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 66 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 26 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 10 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 67 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 27 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 68 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 28 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 69 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 29 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 70 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 30 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 11 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-038:139600] MCW rank 71 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-036:142453] MCW rank 31 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-035:152772] MCW rank 12 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-038:139600] MCW rank 72 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-036:142453] MCW rank 32 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-038:139600] MCW rank 73 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-036:142453] MCW rank 33 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-035:152772] MCW rank 13 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-036:142453] MCW rank 34 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-038:139600] MCW rank 74 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-036:142453] MCW rank 35 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+[j-038:139600] MCW rank 75 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+[j-035:152772] MCW rank 14 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-035:152772] MCW rank 15 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+[j-035:152772] MCW rank 16 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-035:152772] MCW rank 17 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-035:152772] MCW rank 18 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-035:152772] MCW rank 19 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-037:140102] MCW rank 56 bound to socket 1[core 16[hwt 0-1]]: [../../../../../../../../../../../..][../../../../BB/../../../../../../..]
+[j-037:140102] MCW rank 57 bound to socket 1[core 17[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../BB/../../../../../..]
+[j-037:140102] MCW rank 58 bound to socket 1[core 18[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../BB/../../../../..]
+[j-037:140102] MCW rank 59 bound to socket 1[core 19[hwt 0-1]]: [../../../../../../../../../../../..][../../../../../../../BB/../../../..]
+[j-037:140102] MCW rank 40 bound to socket 0[core 0[hwt 0-1]]: [BB/../../../../../../../../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 41 bound to socket 0[core 1[hwt 0-1]]: [../BB/../../../../../../../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 42 bound to socket 0[core 2[hwt 0-1]]: [../../BB/../../../../../../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 43 bound to socket 0[core 3[hwt 0-1]]: [../../../BB/../../../../../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 44 bound to socket 0[core 4[hwt 0-1]]: [../../../../BB/../../../../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 45 bound to socket 0[core 5[hwt 0-1]]: [../../../../../BB/../../../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 46 bound to socket 0[core 6[hwt 0-1]]: [../../../../../../BB/../../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 47 bound to socket 0[core 7[hwt 0-1]]: [../../../../../../../BB/../../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 48 bound to socket 0[core 8[hwt 0-1]]: [../../../../../../../../BB/../../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 49 bound to socket 0[core 9[hwt 0-1]]: [../../../../../../../../../BB/../..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 50 bound to socket 0[core 10[hwt 0-1]]: [../../../../../../../../../../BB/..][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 51 bound to socket 0[core 11[hwt 0-1]]: [../../../../../../../../../../../BB][../../../../../../../../../../../..]
+[j-037:140102] MCW rank 52 bound to socket 1[core 12[hwt 0-1]]: [../../../../../../../../../../../..][BB/../../../../../../../../../../..]
+[j-037:140102] MCW rank 53 bound to socket 1[core 13[hwt 0-1]]: [../../../../../../../../../../../..][../BB/../../../../../../../../../..]
+[j-037:140102] MCW rank 54 bound to socket 1[core 14[hwt 0-1]]: [../../../../../../../../../../../..][../../BB/../../../../../../../../..]
+[j-037:140102] MCW rank 55 bound to socket 1[core 15[hwt 0-1]]: [../../../../../../../../../../../..][../../../BB/../../../../../../../..]
+=== Program Started on 01/09/2017 18:00:02 ===
+  Reading points ... 
+    Done in 139 ms
+  Reading centers ...
+    Done in 1 ms
+  Computing K-Means .. 
+Iteration number: 0
+Rank 5 compute time 28375
+Rank 46 compute time 28382
+Rank 38 compute time 28389
+Rank 58 compute time 28411
+Rank 64 compute time 28415
+Rank 71 compute time 28414
+Rank 62 compute time 28423
+Rank 3 compute time 28411
+Rank 27 compute time 28416
+Rank 45 compute time 28417
+Rank 79 compute time 28411
+Rank 56 compute time 28421
+Rank 57 compute time 28418
+Rank 7 compute time 28424
+Rank 11 compute time 28429
+Rank 14 compute time 28419
+Rank 31 compute time 28426
+Rank 22 compute time 28429
+Rank 76 compute time 28415
+Rank 53 compute time 28430
+Rank 52 compute time 28427
+Rank 61 compute time 28434
+Rank 9 compute time 28436
+Rank 51 compute time 28432
+Rank 36 compute time 28440
+Rank 16 compute time 28430
+Rank 17 compute time 28430
+Rank 42 compute time 28437
+Rank 35 compute time 28436
+Rank 28 compute time 28439
+Rank 39 compute time 28438
+Rank 32 compute time 28431
+Rank 10 compute time 28444
+Rank 66 compute time 28444
+Rank 54 compute time 28440
+Rank 19 compute time 28436
+Rank 34 compute time 28445
+Rank 6 compute time 28453
+Rank 74 compute time 28446
+Rank 33 compute time 28450
+Rank 78 compute time 28447
+Rank 65 compute time 28454
+Rank 73 compute time 28443
+Rank 23 compute time 28449
+Rank 55 compute time 28454
+Rank 15 compute time 28444
+Rank 21 compute time 28456
+Rank 49 compute time 28453
+Rank 25 compute time 28455
+Rank 70 compute time 28465
+Rank 12 compute time 28449
+Rank 44 compute time 28458
+Rank 60 compute time 28466
+Rank 41 compute time 28464
+Rank 2 compute time 28462
+Rank 48 compute time 28468
+Rank 24 compute time 28476
+Rank 40 compute time 28481
+Rank 29 compute time 28477
+Nearest centers: 1
+Rank 0 compute time 28480
+Rank 1 compute time 28489
+Rank 47 compute time 28504
+Rank 63 compute time 28522
+Rank 26 compute time 28543
+Rank 75 compute time 28541
+Rank 68 compute time 28562
+Rank 37 compute time 28556
+Rank 4 compute time 28562
+Rank 50 compute time 28561
+Rank 30 compute time 28560
+Rank 69 compute time 28569
+Rank 72 compute time 28561
+Rank 18 compute time 28560
+Rank 43 compute time 28570
+Rank 8 compute time 28575
+Rank 59 compute time 28569
+Rank 77 compute time 28572
+Rank 13 compute time 28574
+Rank 67 compute time 28587
+Rank 20 compute time 28586
+All reduce: 1
+Iteration number: 1
+Rank 3 compute time 28415
+Rank 46 compute time 28442
+Rank 5 compute time 28451
+Rank 34 compute time 28463
+Rank 57 compute time 28488
+Rank 56 compute time 28489
+Rank 76 compute time 28491
+Rank 32 compute time 28496
+Rank 74 compute time 28495
+Nearest centers: 2
+Rank 0 compute time 28492
+Rank 38 compute time 28497
+Rank 14 compute time 28497
+Rank 71 compute time 28500
+Rank 27 compute time 28504
+Rank 31 compute time 28505
+Rank 48 compute time 28499
+Rank 45 compute time 28507
+Rank 2 compute time 28503
+Rank 11 compute time 28506
+Rank 65 compute time 28507
+Rank 16 compute time 28507
+Rank 15 compute time 28511
+Rank 54 compute time 28516
+Rank 6 compute time 28517
+Rank 28 compute time 28512
+Rank 10 compute time 28500
+Rank 70 compute time 28519
+Rank 33 compute time 28516
+Rank 17 compute time 28513
+Rank 7 compute time 28522
+Rank 36 compute time 28521
+Rank 22 compute time 28518
+Rank 47 compute time 28521
+Rank 49 compute time 28526
+Rank 58 compute time 28531
+Rank 66 compute time 28530
+Rank 9 compute time 28523
+Rank 73 compute time 28523
+Rank 79 compute time 28532
+Rank 52 compute time 28532
+Rank 19 compute time 28531
+Rank 35 compute time 28527
+Rank 64 compute time 28538
+Rank 44 compute time 28537
+Rank 63 compute time 28529
+Rank 12 compute time 28542
+Rank 53 compute time 28538
+Rank 1 compute time 28540
+Rank 39 compute time 28535
+Rank 51 compute time 28541
+Rank 41 compute time 28541
+Rank 55 compute time 28542
+Rank 42 compute time 28545
+Rank 29 compute time 28541
+Rank 78 compute time 28547
+Rank 61 compute time 28545
+Rank 25 compute time 28542
+Rank 23 compute time 28548
+Rank 60 compute time 28554
+Rank 21 compute time 28547
+Rank 24 compute time 28548
+Rank 62 compute time 28558
+Rank 59 compute time 28562
+Rank 30 compute time 28561
+Rank 18 compute time 28560
+Rank 26 compute time 28569
+Rank 68 compute time 28575
+Rank 69 compute time 28580
+Rank 75 compute time 28582
+Rank 40 compute time 28583
+Rank 8 compute time 28585
+Rank 4 compute time 28599
+Rank 77 compute time 28599
+Rank 13 compute time 28606
+Rank 37 compute time 28603
+Rank 43 compute time 28601
+Rank 50 compute time 28608
+Rank 67 compute time 28607
+Rank 20 compute time 28608
+Rank 72 compute time 28631
+All reduce: 2
+Iteration number: 2
+Killed by signal 1.
+Killed by signal 1.
+Killed by signal 1.
+Rank 27 compute time 28309
+Rank 28 compute time 28398
+Rank 29 compute time 28311
+Rank 23 compute time 28302
+Rank 39 compute time 28293
+Rank 32 compute time 28232
+Rank 22 compute time 28299
+Rank 21 compute time 28304
+Rank 26 compute time 28294
+Rank 38 compute time 28287
+Rank 35 compute time 28380
+Rank 37 compute time 28296
+Rank 34 compute time 28059
+Rank 33 compute time 28286
+Rank 36 compute time 28150
+Rank 30 compute time 28296
+Rank 31 compute time 28273
+Rank 24 compute time 28386
+Rank 25 compute time 28320
+Rank 57 compute time 28247
+Rank 4 compute time 28268
+Rank 19 compute time 28293
+Rank 3 compute time 28240
+Rank 12 compute time 28258
+Rank 14 compute time 28308
+Rank 9 compute time 28319
+Rank 5 compute time 28386
+Rank 1 compute time 28268
+Rank 13 compute time 28294
+Rank 10 compute time 28380
+Rank 17 compute time 28297
+Rank 16 compute time 28305
+Rank 18 compute time 28294
+Rank 2 compute time 28297
+Rank 15 compute time 28309
+Rank 7 compute time 28286
+Rank 11 compute time 28307
+Rank 8 compute time 28308
+Rank 6 compute time 28270
+[j-035][[52660,1],19][btl_tcp_frag.c:237:mca_btl_tcp_frag_recv] mca_btl_tcp_frag_recv: readv failed: Connection reset by peer (104)
+Rank 47 compute time 28254
+Rank 45 compute time 28260
+Rank 46 compute time 28267
+Rank 53 compute time 28284
+Rank 42 compute time 28295
+Rank 56 compute time 28304
+Rank 52 compute time 28304
+Rank 51 compute time 28307
+Rank 54 compute time 28307
+Rank 58 compute time 28308
+Rank 50 compute time 28308
+Rank 44 compute time 28320
+Rank 41 compute time 28322
+Rank 40 compute time 28331
+Rank 48 compute time 28363
+Rank 59 compute time 28375
+Rank 49 compute time 28376
+Rank 55 compute time 28377
+Rank 43 compute time 28391
+[j-037][[52660,1],59][btl_tcp_frag.c:237:mca_btl_tcp_frag_recv] mca_btl_tcp_frag_recv: readv failed: Connection reset by peer (104)
+[j-037:140153] pml_ob1_sendreq.c:188 FATAL
+Rank 75 compute time 28355
+Rank 69 compute time 28305
+Rank 66 compute time 28348
+Rank 79 compute time 28299
+Rank 68 compute time 28306
+Rank 71 compute time 28267
+Rank 70 compute time 28298
+Rank 64 compute time 28291
+Rank 73 compute time 28395
+[j-038:139647] pml_ob1_sendreq.c:188 FATAL
+Rank 67 compute time 28391
+Rank 76 compute time 28289
+Rank 72 compute time 28301
+Rank 65 compute time 28382
+[j-038][[52660,1],79][btl_tcp_frag.c:237:mca_btl_tcp_frag_recv] mca_btl_tcp_frag_recv: readv failed: Connection reset by peer (104)
+Rank 77 compute time 28314
+Rank 74 compute time 28297
+Rank 61 compute time 28316
+Rank 63 compute time 28368
+Rank 78 compute time 28307

@@ -65,7 +65,7 @@ public class ProgramWorker {
 //        final double[] centerSumsAndCountsForThread = new double[lengthCenterSumsAndCounts];
         final DoubleBuffer centerSumsAndCountsForThread = DoubleBuffer.allocate(lengthCenterSumsAndCounts);
         final int[] clusterAssignments = new int[ParallelOps.pointsForThread[threadIdx]];
-
+        int rank = MPI.COMM_WORLD.getRank();
         int itrCount = 0;
         boolean converged = false;
         print("  Computing K-Means .. ");
@@ -79,14 +79,19 @@ public class ProgramWorker {
         while (itrCount < maxIterations) {
             // Note. adding a barrier to begin with to show the variation with compute timings
             // ParallelOps.worldProcsComm.barrier();
-print(String.format("Iteration number: %d", itrCount));
+//print(String.format("Iteration number: %d", itrCount));
             ++itrCount;
+long start = System.currentTimeMillis();
             resetCenterSumsAndCounts(centerSumsAndCountsForThread, lengthCenterSumsAndCounts);
 
 //            timings.add(new Date().getTime()*1.0);
             computeTime = MPI.wtime();
             findNearesetCenters(dimension, numCenters, pointsForProc, centers, centerSumsAndCountsForThread,
                     clusterAssignments, threadIdx);
+//            print(String.format("Nearest centers: %d", itrCount));
+            long end = System.currentTimeMillis();
+
+           // System.out.println(String.format("Rank %d compute time %d", rank, (end - start)));
             double t = (MPI.wtime() - computeTime)*1000;
             times[1] += t;
 //            timings.add(t);
@@ -111,6 +116,7 @@ print(String.format("Iteration number: %d", itrCount));
                 // Note. reverting to default MPI call with double buffer
 //                ParallelOps.allReduceSum(centerSumsAndCountsForThread, 0, numCenters*(dimension+1));
                 ParallelOps.worldProcsComm.allReduce(centerSumsAndCountsForThread, lengthCenterSumsAndCounts, MPI.DOUBLE, MPI.SUM);
+                //print(String.format("All reduce: %d", itrCount));
                 d = (MPI.wtime() - t)*1000;
                 times[2] += d;
 //                timings.add(d);
