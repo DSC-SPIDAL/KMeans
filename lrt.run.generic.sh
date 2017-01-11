@@ -55,7 +55,8 @@ procbind=$8
 
 reportmpibindings=--report-bindings
 #reportmpibindings=
-btl="--mca btl tcp,sm,self --mca btl_tcp_if_include eth1"
+#btl="--mca btl tcp,sm,self --mca btl_tcp_if_include eth1"
+btl="--mca btl openib,self,sm "
 if [ $procbind = "core" ]; then
     # with IB and bound to corresponding PEs
     mpirun $btl --report-bindings --map-by ppr:$ppn:node:PE=$pe --bind-to core -hostfile $hostfile -np $(($nodes*$ppn)) java $opts -cp $cp org.saliya.ompi.kmeans.ProgramLRT -n $n -d $d -k $k -t $t -c $c -p $p -m $m -b $b -o out.txt -T $T -bind $explicitbind -partition false 2>&1 | tee lrt_"$pat"_"$n"_"$k"_"$d"_"$m".txt
